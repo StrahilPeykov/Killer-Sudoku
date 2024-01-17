@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ypa.command.CompoundCommand;
-import ypa.model.KCell;
-import ypa.model.KPuzzle;
+import ypa.model.HCell;
+import ypa.model.HPuzzle;
 import ypa.reasoning.EmptyCellReasoner;
 
 import java.util.Scanner;
@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EmptyCellReasonerTest {
 
-    private KPuzzle puzzle;
+    private HPuzzle puzzle;
 
     @BeforeEach
     public void setUp() {
-        puzzle = new KPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
+        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
     }
 
     /**
@@ -33,7 +33,7 @@ public class EmptyCellReasonerTest {
     public void testApplyToCell() {
         System.out.println("applyToCell");
         EmptyCellReasoner instance = new EmptyCellReasonerImpl(puzzle);
-        KCell cell = puzzle.getCell(1, 1);
+        HCell cell = puzzle.getCell(1, 1);
         CompoundCommand result = instance.applyToCell(cell);
         assertAll(
                 () -> assertEquals(0, result.size(), "result.size()"),
@@ -56,7 +56,7 @@ public class EmptyCellReasonerTest {
     }
 
     private static class EmptyCellReasonerImpl extends EmptyCellReasoner {
-        public EmptyCellReasonerImpl(KPuzzle puzzle) {
+        public EmptyCellReasonerImpl(HPuzzle puzzle) {
             super(puzzle);
         }
     }

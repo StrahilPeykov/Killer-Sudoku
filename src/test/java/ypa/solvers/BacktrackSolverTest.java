@@ -1,6 +1,6 @@
 package ypa.solvers;
 
-import ypa.model.KPuzzle;
+import ypa.model.HPuzzle;
 import ypa.reasoning.EntryWithOneEmptyCell;
 import ypa.reasoning.FixpointReasoner;
 import ypa.reasoning.Reasoner;
@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BacktrackSolverTest {
 
-    private KPuzzle puzzle;
+    private HPuzzle puzzle;
 
     @BeforeEach
     public void setUp() {
-        puzzle = new KPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
+        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
     }
 
     /**

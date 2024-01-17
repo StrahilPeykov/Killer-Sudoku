@@ -81,7 +81,7 @@ public class KEntry extends AbstractGroup {
      * @pre {@code cell.isEmpty()}
      */
     @Override
-    public void add(final KCell cell) {
+    public void add(final HCell cell) {
         if (!cell.isEmpty()) {
             throw new IllegalArgumentException(getClass().getSimpleName()
                     + "add().pre failed: cell is not empty");
@@ -91,7 +91,7 @@ public class KEntry extends AbstractGroup {
 
     @Override
     public boolean isValid() {
-        for (KCell cell : this) {
+        for (HCell cell : this) {
             // these cells are not blocked
             if (!cell.isEmpty() && this.getStateCount(cell.getState()) > 1) {
                 // digit occurs more than once
@@ -99,7 +99,7 @@ public class KEntry extends AbstractGroup {
             }
         }
         final int total = this.getTotal();
-        final int emptyCount = this.getStateCount(KCell.EMPTY);
+        final int emptyCount = this.getStateCount(HCell.EMPTY);
         final int expectedSum = this.specification.getSum();
         if (total + emptyCount > expectedSum) {
             // sum of digits filled in is too high

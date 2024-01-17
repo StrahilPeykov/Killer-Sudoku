@@ -7,8 +7,8 @@ import ypa.command.Command;
 import ypa.command.CompoundCommand;
 import ypa.command.SetCommand;
 import ypa.command.UndoRedo;
-import ypa.model.KCell;
-import ypa.model.KPuzzle;
+import ypa.model.HCell;
+import ypa.model.HPuzzle;
 import ypa.reasoning.BasicEmptyCellByContradiction;
 import ypa.reasoning.EntryWithOneEmptyCell;
 import ypa.reasoning.FixpointReasoner;
@@ -425,7 +425,7 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
         try {
-            puzzle = new KPuzzle(scanner, puzzleFile.getName());
+            puzzle = new HPuzzle(scanner, puzzleFile.getName());
             this.setTitle("Kakuro Puzzle Assistant: " + puzzle.getName());
             jTextArea.append("Loaded puzzle from file " +
                     puzzle.getName() + "\n");
@@ -437,7 +437,7 @@ public class MainFrame extends javax.swing.JFrame {
 //
             }
             unsavedModifications = false;
-            updateModeRadioButtons(KPuzzle.Mode.SOLVE);
+            updateModeRadioButtons(HPuzzle.Mode.SOLVE);
             updateFrame();
         } catch (IllegalArgumentException e) {
             jTextArea.append("File does not contain a puzzle description:\n");
@@ -474,22 +474,22 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jRadioButtonMenuItemViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemViewActionPerformed
-        updateModeRadioButtons(KPuzzle.Mode.VIEW);
+        updateModeRadioButtons(HPuzzle.Mode.VIEW);
     }//GEN-LAST:event_jRadioButtonMenuItemViewActionPerformed
 
     private void jRadioButtonMenuItemSolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemSolveActionPerformed
-        updateModeRadioButtons(KPuzzle.Mode.SOLVE);
+        updateModeRadioButtons(HPuzzle.Mode.SOLVE);
     }//GEN-LAST:event_jRadioButtonMenuItemSolveActionPerformed
 
     private void jRadioButtonMenuItemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemEditActionPerformed
-        updateModeRadioButtons(KPuzzle.Mode.EDIT);
+        updateModeRadioButtons(HPuzzle.Mode.EDIT);
     }//GEN-LAST:event_jRadioButtonMenuItemEditActionPerformed
 
     private void jPanelPuzzleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelPuzzleMouseClicked
         if (evt.getClickCount() == 0) {
             return;
         }
-        final KCell cell = puzzlePanel.mouseToCell(evt);
+        final HCell cell = puzzlePanel.mouseToCell(evt);
         if (cell == null) {
             return;
         }
@@ -512,12 +512,12 @@ public class MainFrame extends javax.swing.JFrame {
         if (puzzle == null) {
             return;
         }
-        final KCell cell = this.puzzlePanel.getSelected();
+        final HCell cell = this.puzzlePanel.getSelected();
         if (cell == null) {
             return;
         }
         // cell != null
-        if (puzzle.getMode() != KPuzzle.Mode.SOLVE) {
+        if (puzzle.getMode() != HPuzzle.Mode.SOLVE) {
             return;
         }
 
@@ -527,7 +527,7 @@ public class MainFrame extends javax.swing.JFrame {
         if ('1' <= c && c <= '9') {
             state = c - '0';
         } else if (c == '0' | c == ' ') {
-            state = KCell.EMPTY;
+            state = HCell.EMPTY;
         } else {
             return;
         }
@@ -828,7 +828,7 @@ public class MainFrame extends javax.swing.JFrame {
             new File(new File(".."), "puzzles");
 
     /** The puzzle being solved, or null if no puzzle loaded. */
-    private KPuzzle puzzle = null;
+    private HPuzzle puzzle = null;
 
     /** The puzzle panel. */
     private final PuzzlePanel puzzlePanel;
@@ -876,7 +876,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanelPuzzle.setHighlight(
                     jCheckBoxMenuItemHighlight.getState());
 
-            final Collection<KCell> markedCells = new HashSet<>();
+            final Collection<HCell> markedCells = new HashSet<>();
 // If available, set markedCells to cells involved in last command
             if (undoRedo.canUndo()) {
                 final Command command = undoRedo.lastDone();
@@ -912,7 +912,7 @@ public class MainFrame extends javax.swing.JFrame {
      *
      * @param mode  the new mode
      */
-    private void updateModeRadioButtons(final KPuzzle.Mode mode) {
+    private void updateModeRadioButtons(final HPuzzle.Mode mode) {
         if (puzzle == null) {
             jRadioButtonMenuItemView.setSelected(false);
             jRadioButtonMenuItemSolve.setSelected(false);
@@ -920,9 +920,9 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
         // puzzle != null
-        jRadioButtonMenuItemView.setSelected(mode == KPuzzle.Mode.VIEW);
-        jRadioButtonMenuItemSolve.setSelected(mode == KPuzzle.Mode.SOLVE);
-        jRadioButtonMenuItemEdit.setSelected(mode == KPuzzle.Mode.EDIT);
+        jRadioButtonMenuItemView.setSelected(mode == HPuzzle.Mode.VIEW);
+        jRadioButtonMenuItemSolve.setSelected(mode == HPuzzle.Mode.SOLVE);
+        jRadioButtonMenuItemEdit.setSelected(mode == HPuzzle.Mode.EDIT);
         puzzle.setMode(mode);
         jTextArea.append("Mode changed to " + puzzle.getMode() + "\n");
     }

@@ -3,7 +3,7 @@ package ypa.reasoning;
 import org.junit.jupiter.api.Test;
 
 import ypa.command.CompoundCommand;
-import ypa.model.KPuzzle;
+import ypa.model.HPuzzle;
 import ypa.reasoning.Reasoner;
 
 import java.util.Scanner;
@@ -20,10 +20,10 @@ public class ReasonerTest {
     public static final String PUZZLE = "a 1 - 3 2\nb 1 - 7 2\na 1 | 4 2\na 2 | 6 2\n";
 
     /** Puzzle for testing. */
-    private final KPuzzle puzzle;
+    private final HPuzzle puzzle;
 
     public ReasonerTest() {
-        puzzle = new KPuzzle(new Scanner(PUZZLE), "Test");
+        puzzle = new HPuzzle(new Scanner(PUZZLE), "Test");
     }
 
     /**

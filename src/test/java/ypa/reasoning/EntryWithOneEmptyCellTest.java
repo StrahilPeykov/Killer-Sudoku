@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ypa.command.CompoundCommand;
-import ypa.model.KCell;
-import ypa.model.KPuzzle;
+import ypa.model.HCell;
+import ypa.model.HPuzzle;
 import ypa.reasoning.EntryWithOneEmptyCell;
 
 import java.util.Scanner;
@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EntryWithOneEmptyCellTest {
 
-    private KPuzzle puzzle;
+    private HPuzzle puzzle;
 
     /**
      * Prepares each test case.
      */
     @BeforeEach
     public void setUp() {
-        puzzle = new KPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
+        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
         System.out.println(puzzle);
         System.out.println(puzzle.gridAsString());
     }
@@ -37,9 +37,9 @@ public class EntryWithOneEmptyCellTest {
     @Test
     public void testApplyToCell() {
         System.out.println("applyToCell");
-        KCell cell11 = puzzle.getCell(1, 1);
+        HCell cell11 = puzzle.getCell(1, 1);
         cell11.setState(1);
-        KCell cell12 = puzzle.getCell(1, 2);
+        HCell cell12 = puzzle.getCell(1, 2);
         EntryWithOneEmptyCell instance = new EntryWithOneEmptyCell(puzzle);
         System.out.println(puzzle.gridAsString());
         CompoundCommand result = instance.applyToCell(cell12);
@@ -48,7 +48,7 @@ public class EntryWithOneEmptyCellTest {
                 () -> assertEquals(1, result.size(), "result.size()"),
                 () -> assertFalse(result.isExecuted(), "result.executed"),
                 () -> assertEquals(1, cell11.getState(), "cell 1, 1 state"),
-                () -> assertEquals(KCell.EMPTY, cell12.getState(), "cell 1, 2 state")
+                () -> assertEquals(HCell.EMPTY, cell12.getState(), "cell 1, 2 state")
         );
     }
 
@@ -58,9 +58,9 @@ public class EntryWithOneEmptyCellTest {
     @Test
     public void testApply() {
         System.out.println("apply");
-        KCell cell11 = puzzle.getCell(1, 1);
+        HCell cell11 = puzzle.getCell(1, 1);
         cell11.setState(1);
-        KCell cell12 = puzzle.getCell(1, 2);
+        HCell cell12 = puzzle.getCell(1, 2);
         EntryWithOneEmptyCell instance = new EntryWithOneEmptyCell(puzzle);
         System.out.println(puzzle.gridAsString());
         CompoundCommand result = instance.apply();

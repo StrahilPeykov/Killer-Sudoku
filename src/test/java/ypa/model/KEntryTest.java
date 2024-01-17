@@ -3,7 +3,7 @@ package ypa.model;
 import org.junit.jupiter.api.Test;
 
 import ypa.model.Direction;
-import ypa.model.KCell;
+import ypa.model.HCell;
 import ypa.model.KEntry;
 
 import java.util.List;
@@ -78,12 +78,12 @@ public class KEntryTest {
         String entry = "a 2 -  9 3";
         Scanner scanner = new Scanner(entry);
         KEntry instance = new KEntry(scanner);
-        KCell[] cells = new KCell[] {
-            new KCell(KCell.EMPTY),
-            new KCell(KCell.EMPTY),
-            new KCell(KCell.EMPTY)
+        HCell[] cells = new HCell[] {
+            new HCell(HCell.EMPTY),
+            new HCell(HCell.EMPTY),
+            new HCell(HCell.EMPTY)
         };
-        for (KCell cell : cells) {
+        for (HCell cell : cells) {
             instance.add(cell);
             cell.add(instance);
         }

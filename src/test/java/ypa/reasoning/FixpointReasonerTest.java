@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ypa.command.CompoundCommand;
-import ypa.model.KCell;
-import ypa.model.KPuzzle;
+import ypa.model.HCell;
+import ypa.model.HPuzzle;
 import ypa.reasoning.EntryWithOneEmptyCell;
 import ypa.reasoning.FixpointReasoner;
 import ypa.reasoning.Reasoner;
@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class FixpointReasonerTest {
 
-    private KPuzzle puzzle;
+    private HPuzzle puzzle;
 
     @BeforeEach
     public void setUp() {
-        puzzle = new KPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
+        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
     }
 
     /**
@@ -52,7 +52,7 @@ public class FixpointReasonerTest {
     @Test
     public void testApplySolved() {
         System.out.println("apply solved");
-        KCell cell11 = puzzle.getCell(1, 1);
+        HCell cell11 = puzzle.getCell(1, 1);
         cell11.setState(1);
         Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
         FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
@@ -72,7 +72,7 @@ public class FixpointReasonerTest {
     @Test
     public void testApplyUnsolvable1() {
         System.out.println("apply immediately unsolvable");
-        KCell cell = puzzle.getCell(2, 1);
+        HCell cell = puzzle.getCell(2, 1);
         cell.setState(2);
         Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
         FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
@@ -82,7 +82,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertNull(result, "result null"),
                 () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(KCell.EMPTY), "puzzle unchanged")
+                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged")
         );
     }
 
@@ -92,7 +92,7 @@ public class FixpointReasonerTest {
     @Test
     public void testApplyUnsolvable2() {
         System.out.println("apply indirectly unsolvable");
-        KCell cell = puzzle.getCell(1, 2);
+        HCell cell = puzzle.getCell(1, 2);
         cell.setState(1);
         Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
         FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
@@ -102,7 +102,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertNull(result, "result null"),
                 () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(KCell.EMPTY), "puzzle unchanged")
+                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged")
         );
     }
 

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Stack;
 
 import ypa.command.Command;
-import ypa.model.KPuzzle;
+import ypa.model.HPuzzle;
 
 /**
  * Abstract base class for solvers of Kakuro puzzles.
@@ -14,7 +14,7 @@ import ypa.model.KPuzzle;
 public abstract class AbstractSolver {
 
     /** The puzzle being solved. */
-    protected KPuzzle puzzle;
+    protected HPuzzle puzzle;
 
     /** Commands executed. */
     protected Stack<Command> commands;
@@ -26,7 +26,7 @@ public abstract class AbstractSolver {
      * @throws IllegalArgumentException  if {@code puzzle == null}
      * @pre {@code puzzle != null}
      */
-    public AbstractSolver(final KPuzzle puzzle) {
+    public AbstractSolver(final HPuzzle puzzle) {
         if (puzzle == null) {
             throw new IllegalArgumentException(this.getClass().getSimpleName()
                     + "().pre failed: puzzle == null");
