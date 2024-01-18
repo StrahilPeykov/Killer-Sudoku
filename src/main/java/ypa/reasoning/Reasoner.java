@@ -41,8 +41,8 @@ public class Reasoner {
     /**
      * Constructs a reasoner for a given puzzle.
      *
-     * @param puzzle  the puzzle
-     * @throws IllegalArgumentException  if {@code puzzle == null}
+     * @param puzzle the puzzle
+     * @throws IllegalArgumentException if {@code puzzle == null}
      * @pre {@code puzzle != null}
      */
     public Reasoner(final HPuzzle puzzle) {
@@ -59,9 +59,9 @@ public class Reasoner {
      * <ul>
      * <li>Reasoning led to forced commands: the returned list contains them</li>
      * <li>Reasoning led to a contradiction: the puzzle is impossible to complete,
-     *      null is returned</li>
+     * null is returned</li>
      * <li>Reasoning neither led to forced commands nor to a contradiction:
-     *      the returned list is empty</li>
+     * the returned list is empty</li>
      * </ul>
      * To be overridden by concrete reasoner
      *

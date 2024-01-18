@@ -48,8 +48,7 @@ public class EntryWithOneEmptyCellTest {
                 () -> assertEquals(1, result.size(), "result.size()"),
                 () -> assertFalse(result.isExecuted(), "result.executed"),
                 () -> assertEquals(1, cell11.getState(), "cell 1, 1 state"),
-                () -> assertEquals(HCell.EMPTY, cell12.getState(), "cell 1, 2 state")
-        );
+                () -> assertEquals(HCell.EMPTY, cell12.getState(), "cell 1, 2 state"));
     }
 
     /**
@@ -69,8 +68,7 @@ public class EntryWithOneEmptyCellTest {
                 () -> assertEquals(1, result.size(), "result.size()"),
                 () -> assertTrue(result.isExecuted(), "result.executed"),
                 () -> assertEquals(1, cell11.getState(), "cell 1, 1 state"),
-                () -> assertEquals(2, cell12.getState(), "new cell 1, 2 state")
-        );
+                () -> assertEquals(2, cell12.getState(), "new cell 1, 2 state"));
     }
 
 }

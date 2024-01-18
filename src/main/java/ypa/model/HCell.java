@@ -28,12 +28,6 @@ public class HCell {
     /** The cell's state. */
     private int state;
 
-    /**
-     * The groups to which this cell belongs.
-     * The first group will be the whole grid.
-     */
-    private final List<AbstractGroup> groups;
-
     /** Location in the grid, if any. */
     private Location location;
 
@@ -43,7 +37,7 @@ public class HCell {
     /**
      * Constructs a cell with a given state.
      *
-     * @param state  state
+     * @param state state
      * @pre {@code state} is a valid state
      */
     public HCell(final int state) {
@@ -52,14 +46,14 @@ public class HCell {
                     + "(" + state + ").pre failed");
         }
         this.state = state;
-        groups = new ArrayList<>();
-        grid = null;
+        this.grid = null;
+        this.location = null;
     }
 
     /**
      * Constructs a cell with a state given by a string.
      *
-     * @param state  state
+     * @param state state
      */
     public HCell(final String state) {
         this(fromString(state));
@@ -68,7 +62,7 @@ public class HCell {
     /**
      * Constructs a cell from a given scanner.
      *
-     * @param scanner  the given scanner
+     * @param scanner the given scanner
      */
     public HCell(final Scanner scanner) {
         this(scanner.next());
@@ -81,16 +75,13 @@ public class HCell {
     /**
      * Sets a new cell state.
      *
-     * @param state  the new state
+     * @param state the new state
      * @pre {@code state} is valid
      */
     public void setState(int state) {
         if (state < BLOCKED) {
             throw new IllegalArgumentException(getClass().getSimpleName()
-                    + ".setState().pre failed: state == " + state + " < " + BLOCKED);
-        }
-        for (AbstractGroup group : groups) {
-            group.update(this, state);
+                    + ".setState().pre failed: Invalid state " + state);
         }
         this.state = state;
     }
@@ -139,53 +130,11 @@ public class HCell {
     }
 
     /**
-     * Returns whether this cell is involved in a rule violation.
-     *
-     * @return whether this cell conforms to the rules
-     */
-    public boolean isOK() {
-        if (!this.isFilled()) {
-            return true;
-        }
-        for (AbstractGroup group : groups) {
-            if (group == grid) {
-                continue;
-            }
-            if (!group.isValid()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether this cell is associated with a given group.
-     *
-     * @param group  the group to check
-     * @return whether {@code this} is element of {@code group}
-     */
-    public boolean isContainedIn(final AbstractGroup group) {
-        return groups.contains(group);
-    }
-
-    /**
-     * Adds a group containing this cell.
-     *
-     * @param group  the group to add
-     * @pre {@code group != null && ! isElementOf(group)}
-     * @modifies {@code this}
-     * @post {@code isElementOf(group)}
-     */
-    void add(final AbstractGroup group) {
-        groups.add(group);
-    }
-
-    /**
      * Converts string to cell state.
      *
-     * @param s  string to convert
+     * @param s string to convert
      * @return cell state corresponding to s
-     * @throws IllegalArgumentException  if invalid string
+     * @throws IllegalArgumentException if invalid string
      */
     public static int fromString(final String s) {
         switch (s) {
@@ -213,15 +162,13 @@ public class HCell {
 
     @Override
     public String toString() {
-        return switch (state) {
-            case BLOCKED -> BLOCKED_STR;
-            case EMPTY -> EMPTY_STR;
-            default -> String.valueOf(state);
-        };
+        switch (state) {
+            case BLOCKED:
+                return BLOCKED_STR;
+            case EMPTY:
+                return EMPTY_STR;
+            default:
+                return String.valueOf(state);
+        }
     }
-
-    public Iterable<AbstractGroup> groups() {
-        return groups;
-    }
-
 }

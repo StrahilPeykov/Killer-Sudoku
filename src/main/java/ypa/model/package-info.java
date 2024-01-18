@@ -4,10 +4,10 @@
  * However, also class {@link ypa.model.HCell} is important:
  * <ul>
  * <li>To iterate over all cells:
- *      {@code for (KCell cell : puzzle.getCells())}</li>
+ * {@code for (KCell cell : puzzle.getCells())}</li>
  * <li>To create a new {@link ypa.command.SetCommand}</li>
  * <li>To check whether a cell is empty:
- *      {@link ypa.model.HCell#isEmpty()}</li>
+ * {@link ypa.model.HCell#isEmpty()}</li>
  * <li>To obtain the empty cell state: {@link ypa.model.HCell#EMPTY}</li>
  * </ul>
  *

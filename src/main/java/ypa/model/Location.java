@@ -22,8 +22,8 @@ public class Location {
     /**
      * Constructs a new location from given row and column.
      *
-     * @param row  the given row coordinate
-     * @param column  the given column coordinate
+     * @param row    the given row coordinate
+     * @param column the given column coordinate
      */
     public Location(final int row, final int column) {
         if (row < 0) {
@@ -38,9 +38,10 @@ public class Location {
         this.column = column;
     }
 
-    /** Constructs a new location from a given scanner.
+    /**
+     * Constructs a new location from a given scanner.
      *
-     * @param scanner  the given scanner
+     * @param scanner the given scanner
      */
     public Location(final Scanner scanner) {
         Pattern original = scanner.delimiter();

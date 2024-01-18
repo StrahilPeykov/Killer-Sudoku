@@ -5,7 +5,7 @@ import ypa.command.CompoundCommand;
 import ypa.command.SetCommand;
 import ypa.model.AbstractGroup;
 import ypa.model.HCell;
-import ypa.model.KEntry;
+import ypa.model.HEntry;
 import ypa.model.HPuzzle;
 
 /**

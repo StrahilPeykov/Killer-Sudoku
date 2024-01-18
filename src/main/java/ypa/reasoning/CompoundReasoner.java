@@ -25,10 +25,10 @@ public class CompoundReasoner extends Reasoner {
     /**
      * Adds a reasoner.
      *
-     * @param reasoner  reasoner to add
+     * @param reasoner reasoner to add
      * @pre {@code reasoner != null} and already set for {@code puzzle}
-     * @throws IllegalArgumentException  if {@code strategy ! null ||
-     *     strategy} is not for same puzzle
+     * @throws IllegalArgumentException if {@code strategy ! null ||
+     *     strategy}                 is not for same puzzle
      */
     public void add(final Reasoner reasoner) {
         if (reasoner == null) {
@@ -41,7 +41,7 @@ public class CompoundReasoner extends Reasoner {
     @Override
     public CompoundCommand apply() {
 
-//  Apply sequence of reasoners until first change
+        // Apply sequence of reasoners until first change
         for (Reasoner reasoner : reasoners) {
             final CompoundCommand command = reasoner.apply();
             if (command == null) {
@@ -50,7 +50,7 @@ public class CompoundReasoner extends Reasoner {
                 return command;
             }
         }
-//
+        //
 
         return super.apply();
     }

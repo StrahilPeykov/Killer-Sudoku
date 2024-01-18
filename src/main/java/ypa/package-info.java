@@ -9,7 +9,7 @@
  * <li>Show a graphical view of a Kakuro puzzle loaded from a text file.
  * <li>Let you solve a Kakuro puzzle interactively in the graphical view.
  * <li>Automatically apply reasoning strategies,
- *   to help solve a Kakuro puzzle.
+ * to help solve a Kakuro puzzle.
  * <li>Automatically solve a Kakuro puzzle.
  * <li>Let you construct and edit Kakuro puzzles.
  * </ul>
@@ -22,7 +22,7 @@
  * <li>[Done] Save puzzle state to text file.
  * <li>[Done] Show graphical view of puzzle state.
  * <li>[Done] Show textual view of puzzle state in message area
- *   (File &gt; Dump).
+ * (File &gt; Dump).
  * <li>[Done] Text can be copied to clipboard from message area.
  * <li>[Done] Clear message area.
  * <li>[Done] Change non-blocked cell states interactively.
@@ -32,8 +32,8 @@
  * <li>[TODO] Support Edit mode.
  * <li>[Done] Confirmation on discarding a changed puzzle state.
  * <li>[Done] Enable/disable highlighting
- *   (is supported in {@link ypa.gui.PuzzlePanel PuzzlePanel},
- *   but not yet used in {@link ypa.gui.MainFrame MainFrame}).
+ * (is supported in {@link ypa.gui.PuzzlePanel PuzzlePanel},
+ * but not yet used in {@link ypa.gui.MainFrame MainFrame}).
  * <li>[Done] Reasoning strategies.
  * <li>[Done] Backtrack solver.
  * <li>[Done] Highlight cells that were changed in the previous action.

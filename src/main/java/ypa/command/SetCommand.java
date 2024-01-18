@@ -11,28 +11,28 @@ import ypa.model.HCell;
  */
 public class SetCommand extends GenericCommand<HCell> {
 
-// Representation of command state
+    // Representation of command state
     /** The command's parameter. */
     private final int newState;
 
     /** Previous state of the receiver, for revert(). */
     private int oldState;
-//
+    //
 
     /**
      * Constructs a set command for a given receiver and new state.
      *
-     * @param receiver  the given receiver
-     * @param newState  the new state
+     * @param receiver the given receiver
+     * @param newState the new state
      */
     public SetCommand(final HCell receiver, final int newState) {
         super(receiver);
-// Initialize command state
+        // Initialize command state
         this.newState = newState;
-//
+        //
     }
 
-// Operations
+    // Operations
     @Override
     public void execute() {
         super.execute();
@@ -52,6 +52,6 @@ public class SetCommand extends GenericCommand<HCell> {
         result.add(receiver);
         return result;
     }
-//
+    //
 
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import ypa.model.Direction;
 import ypa.model.HCell;
-import ypa.model.KEntry;
+import ypa.model.HEntry;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,87 +19,33 @@ import static org.junit.jupiter.api.Assertions.*;
 public class KEntryTest {
 
     /**
-     * Test constructor, getDirection, and toString.
+     * Test of HEntry constructor and basic methods.
      */
     @Test
     public void testConstructor() {
-        System.out.println("KEntry");
-        String expResult = "a 2 -  9 3";
-        Scanner scanner = new Scanner(expResult);
-        KEntry instance = new KEntry(scanner);
-        assertAll(
-                () -> assertEquals(Direction.HORIZONTAL, instance.getDirection(), "direction"),
-                () -> assertEquals(expResult, instance.toString(), "toString")
-        );
+        System.out.println("HEntry");
+        Location location = new Location(1, 2);
+        HEntry instance = new HEntry(location);
+        assertEquals(location, instance.getLocation(), "Location should match");
+
+        // Assuming HEntry uses a scanner to read location in a specific format
+        Scanner scanner = new Scanner("1 2");
+        HEntry instanceFromScanner = new HEntry(scanner);
+        assertEquals(1, instanceFromScanner.getLocation().getRow(), "Row should be 1");
+        assertEquals(2, instanceFromScanner.getLocation().getColumn(), "Column should be 2");
     }
 
     /**
-     * Tests scanEntries.
+     * Test of isValid method, of class HEntry.
      */
     @Test
-    public void testScanEntries() {
-        System.out.println("scanEntries, plain");
-        String entry0 = "a 2 -  9 3";
-        String entry1 = "b 1 | 17 2";
-        String expResult = entry0 + "\n" + entry1 + "\n";
-        List<KEntry> result = KEntry.scanEntries(new Scanner(expResult));
-        assertAll(
-                () -> assertEquals(2, result.size(), "size"),
-                () -> assertEquals(entry0, result.get(0).toString(), "get(0)"),
-                () -> assertEquals(entry1, result.get(1).toString(), "get(1)")
-        );
+    public void testIsValid() {
+        System.out.println("isValid");
+        HEntry entry = new HEntry(new Location(0, 0));
+        HCell cell1 = new HCell(1); // Assume 1 is the starting number
+        HCell cell2 = new HCell(2); // Next number in the sequence
+        entry.add(cell1);
+        entry.add(cell2);
+        assertTrue(entry.isValid(), "Entry should be valid with a correct sequence");
     }
-
-    /**
-     * Tests scanEntries.
-     */
-    @Test
-    public void testScanEntries2() {
-        System.out.println("scanEntries, with extra line");
-        String entry0 = "a 2 -  9 3";
-        String entry1 = "b 1 | 17 2";
-        String expResult = entry0 + "\n" + entry1 + "\n=\n";
-        Scanner scanner = new Scanner(expResult);
-        List<KEntry> result = KEntry.scanEntries(scanner);
-        assertAll(
-                () -> assertEquals(2, result.size(), "size"),
-                () -> assertEquals(entry0, result.get(0).toString(), "get(0)"),
-                () -> assertEquals(entry1, result.get(1).toString(), "get(1)"),
-                () -> assertTrue(scanner.hasNext("="), "next")
-        );
-    }
-
-    /**
-     * Test isValid().
-     */
-    @Test
-    public void testIsValidAllEmpty() {
-        System.out.println("isValid, empty cells");
-        String entry = "a 2 -  9 3";
-        Scanner scanner = new Scanner(entry);
-        KEntry instance = new KEntry(scanner);
-        HCell[] cells = new HCell[] {
-            new HCell(HCell.EMPTY),
-            new HCell(HCell.EMPTY),
-            new HCell(HCell.EMPTY)
-        };
-        for (HCell cell : cells) {
-            instance.add(cell);
-            cell.add(instance);
-        }
-        assertTrue(instance.isValid(), "isValid, all 3 empty");
-        cells[0].setState(8);
-        assertFalse(instance.isValid(), "isValid, 2 empty, too high");
-        cells[0].setState(1);
-        assertTrue(instance.isValid(), "isValid, 2 empty, not too high");
-        cells[1].setState(2);
-        assertTrue(instance.isValid(), "isValid, 1 empty, not too high");
-        cells[2].setState(6);
-        assertTrue(instance.isValid(), "isValid, no empty, sum OK");
-        cells[2].setState(7);
-        assertFalse(instance.isValid(), "isValid, no empty, sum too high");
-        cells[2].setState(5);
-        assertFalse(instance.isValid(), "isValid, no empty, sum too low");
-    }
-
 }

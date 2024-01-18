@@ -14,37 +14,33 @@ public class Histogram extends HashMap<Integer, Integer> {
     /** Constructs an empty histogram. */
     public Histogram() {
         super();
+        // Initialize counts for blocked and empty cells
         put(HCell.BLOCKED, 0);
         put(HCell.EMPTY, 0);
+        // Initialize counts for numbered cells if needed
+        // For example, for numbers 1 to N, where N is the maximum number in the puzzle
+
     }
 
     /**
      * Returns the occurrence count for a given cell state.
      *
-     * @param key  the given cell state
+     * @param key the given cell state
      * @return how often {@code key} occurs
      */
     @Override
     public Integer get(Object key) {
-        Integer current = super.get(key);
-        if (current == null) {
-            current = 0;
-        }
-        return current;
+        return super.getOrDefault(key, 0);
     }
 
     /**
      * Adjusts the count for a given state.
      *
-     * @param state  state whose count changes
-     * @param delta  the amount of change
-     * @pre {@code true}
-     * @modifies {@code this}
-     * @post {@code get(state) == \old(get(state) + delta) &&}<br>
-     *   {@code (\forall CellState s; s != state; get(s) == \old(get(s)))}
+     * @param state state whose count changes
+     * @param delta the amount of change
      */
     public void adjust(final int state, final int delta) {
-        put(state, get(state) + delta);
+        this.put(state, get(state) + delta);
     }
 
 }

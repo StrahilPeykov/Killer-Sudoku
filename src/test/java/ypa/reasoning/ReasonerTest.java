@@ -36,8 +36,7 @@ public class ReasonerTest {
         CompoundCommand result = instance.apply();
         assertAll(
                 () -> assertEquals(0, result.size(), "result.size()"),
-                () -> assertTrue(result.isExecuted(), "result.executed")
-        );
+                () -> assertTrue(result.isExecuted(), "result.executed"));
     }
 
 }

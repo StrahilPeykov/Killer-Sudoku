@@ -22,8 +22,8 @@ public abstract class AbstractSolver {
     /**
      * Constructs a reasoner for a given puzzle.
      *
-     * @param puzzle  the puzzle
-     * @throws IllegalArgumentException  if {@code puzzle == null}
+     * @param puzzle the puzzle
+     * @throws IllegalArgumentException if {@code puzzle == null}
      * @pre {@code puzzle != null}
      */
     public AbstractSolver(final HPuzzle puzzle) {

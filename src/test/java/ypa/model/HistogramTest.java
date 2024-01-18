@@ -15,48 +15,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class HistogramTest {
 
-    /** Subject Under Test. */
     private Histogram instance;
+    // private final int maxNumber = 9; // Assuming a max number for the puzzle
 
     @BeforeEach
     public void setUp() {
         instance = new Histogram();
     }
 
-    /**
-     * Checks SUT state to be equal to given array.
-     */
-    private void checkSUT(final int[] expected) {
-        int result;
-        for (int state = HCell.BLOCKED; state <= 1; ++state) {
-            result = instance.get(state);
-            assertEquals(expected[state - HCell.BLOCKED], result, "Count for state " + state);
+    private void checkSUT(final int[] expected, int maxState) {
+        for (int state = HCell.BLOCKED; state <= maxState; ++state) {
+            int result = instance.get(state);
+            assertEquals(expected[state], result, "Count for state " + state);
         }
     }
 
-    /**
-     * Tests constructor, of class Histogram.
-     */
     @Test
     public void testConstructor() {
         System.out.println("Histogram()");
-        checkSUT(new int[3]);
+        // Check only for BLOCKED and EMPTY states initially
+        int[] expected = { 0, 0 }; // Counts for BLOCKED and EMPTY
+        checkSUT(expected, HCell.EMPTY);
     }
 
-    /**
-     * Tests adjust method, of class Histogram.
-     */
     @Test
     public void testAdjust() {
         System.out.println("adjust");
-        int[] expected = new int[4];
-        int delta = 1;
-        for (int state = HCell.BLOCKED; state <= 1; ++state) {
-            instance.adjust(state, delta);
-            expected[state - HCell.BLOCKED] += delta;
-            ++delta;
-            checkSUT(expected);
-        }
+        // Assume adjusting states from BLOCKED to 2 (for example)
+        int[] expected = { 1, 2, 1 }; // Adjusted counts for BLOCKED, EMPTY, and 1
+        instance.adjust(HCell.BLOCKED, 1);
+        instance.adjust(HCell.EMPTY, 2);
+        instance.adjust(1, 1); // Adjust state 1
+        checkSUT(expected, 1); // Check up to state 1
     }
 
 }

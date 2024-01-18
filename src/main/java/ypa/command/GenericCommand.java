@@ -9,7 +9,7 @@ package ypa.command;
  *
  * This base class can already be used as a command that does nothing.
  *
- * @param <R>  the type of the receiver
+ * @param <R> the type of the receiver
  *
  * @author Tom Verhoeff (Eindhoven University of Technology)
  */
@@ -21,9 +21,9 @@ public class GenericCommand<R> extends Command {
     /**
      * Constructs a command for a given receiver.
      *
-     * @param receiver  the given receiver
+     * @param receiver the given receiver
      * @pre {@code receiver != null}
-     * @throws NullPointerException  if {@code receiver == null}
+     * @throws NullPointerException if {@code receiver == null}
      */
     public GenericCommand(final R receiver) throws NullPointerException {
         super(false);

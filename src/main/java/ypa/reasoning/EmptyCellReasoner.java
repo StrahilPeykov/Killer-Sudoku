@@ -27,7 +27,7 @@ public abstract class EmptyCellReasoner extends Reasoner {
     public CompoundCommand apply() {
         final CompoundCommand result = super.apply();
 
-// Apply reasoner to all empty cells, execute and return command
+        // Apply reasoner to all empty cells, execute and return command
         for (HCell cell : puzzle.getCells()) {
             if (cell.isEmpty()) {
                 CompoundCommand command = applyToCell(cell);
@@ -39,7 +39,7 @@ public abstract class EmptyCellReasoner extends Reasoner {
                 }
             }
         }
-//
+        //
 
         return result;
     }
@@ -49,9 +49,9 @@ public abstract class EmptyCellReasoner extends Reasoner {
      * See {@link Reasoner#apply()} for what it returns when.
      * However, if a command is returned, it will not have been executed.
      *
-     * @param cell  the empty cell
+     * @param cell the empty cell
      * @return command to apply, or null if not applicable
-     * @throws NullPointerException  if {@code cell == null}
+     * @throws NullPointerException if {@code cell == null}
      * @pre {@code cell != null && cell.isEmpty()}
      * @post {@code
      *      (\result == null  ==>  puzzle is not solvable and not modified) &&

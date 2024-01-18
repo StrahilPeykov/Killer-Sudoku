@@ -24,7 +24,7 @@ public abstract class Command {
     /**
      * Constructs a command for a given receiver.
      *
-     * @param executed  initial execution state
+     * @param executed initial execution state
      */
     public Command(final boolean executed) {
         this.executed = executed;
@@ -43,9 +43,9 @@ public abstract class Command {
      * Executes the command.
      * A concrete command will override this method.
      *
-     * @throws IllegalStateException  if {@code executed}
+     * @throws IllegalStateException if {@code executed}
      * @pre {@code ! executed && }
-     *   precondition of the command holds in the receiver
+     *      precondition of the command holds in the receiver
      * @post {@code executed}
      */
     public void execute() throws IllegalStateException {
@@ -61,8 +61,8 @@ public abstract class Command {
      * A concrete command will override this method.
      *
      * @pre {@code executed && }
-     *   precondition of the reversal holds in the receiver
-     * @throws IllegalStateException  if {@code ! executed}
+     *      precondition of the reversal holds in the receiver
+     * @throws IllegalStateException if {@code ! executed}
      * @post {@code ! executed}
      */
     public void revert() throws IllegalStateException {
@@ -74,7 +74,7 @@ public abstract class Command {
     }
 
     /**
-     * Gets all the cells involved in this command.  Must be overridden.
+     * Gets all the cells involved in this command. Must be overridden.
      *
      * @return collection of all cells involved in this command
      */

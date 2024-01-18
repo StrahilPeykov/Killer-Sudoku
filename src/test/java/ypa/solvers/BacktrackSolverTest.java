@@ -42,8 +42,7 @@ public class BacktrackSolverTest {
         assertAll(
                 () -> assertEquals(expResult, result, "return value"),
                 () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(4, instance.getCommands().size(), "commands size")
-        );
+                () -> assertEquals(4, instance.getCommands().size(), "commands size"));
     }
 
     /**
@@ -61,8 +60,7 @@ public class BacktrackSolverTest {
         assertAll(
                 () -> assertEquals(expResult, result, "return value"),
                 () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(5, instance.getCommands().size(), "commands size")
-        );
+                () -> assertEquals(5, instance.getCommands().size(), "commands size"));
     }
 
     /**
@@ -81,8 +79,7 @@ public class BacktrackSolverTest {
         assertAll(
                 () -> assertEquals(expResult, result, "return value"),
                 () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(3, instance.getCommands().size(), "commands size")
-        );
+                () -> assertEquals(3, instance.getCommands().size(), "commands size"));
     }
 
 }

@@ -161,23 +161,32 @@ public class HGrid extends AbstractGroup implements Iterable<HCell> {
      * @return true if the sequence is contiguous, false otherwise
      */
     private boolean isContiguousSequence(HCell cell, int expectedNumber) {
-        if (cell == null || cell.isBlocked() || cell.isEmpty()) {
+        if (!isValidCell(cell, expectedNumber)) {
             return false;
         }
 
-        if (cell.getState() != expectedNumber) {
-            return false;
+        if (isEndOfSequence(expectedNumber)) {
+            return true;
         }
 
-        if (expectedNumber == calculateMaxNumber()) {
-            return true; // Reached the end of the sequence
-        }
+        return exploreAdjacentCells(cell, expectedNumber);
+    }
 
-        // Check adjacent cells for the next number in the sequence
+    private boolean isValidCell(HCell cell, int expectedNumber) {
+        return cell != null && !cell.isBlocked() && !cell.isEmpty() 
+                && cell.getState() == expectedNumber;
+    }
+
+    private boolean isEndOfSequence(int expectedNumber) {
+        return expectedNumber == calculateMaxNumber();
+    }
+
+    private boolean exploreAdjacentCells(HCell cell, int expectedNumber) {
         for (int dRow = -1; dRow <= 1; dRow++) {
             for (int dCol = -1; dCol <= 1; dCol++) {
-                if (dRow == 0 && dCol == 0)
+                if (dRow == 0 && dCol == 0) {
                     continue; // Skip the current cell
+                }
                 int nextRow = cell.getLocation().getRow() + dRow;
                 int nextCol = cell.getLocation().getColumn() + dCol;
                 if (isValidCoordinate(nextRow, nextCol)) {
@@ -188,7 +197,6 @@ public class HGrid extends AbstractGroup implements Iterable<HCell> {
                 }
             }
         }
-
         return false;
     }
 

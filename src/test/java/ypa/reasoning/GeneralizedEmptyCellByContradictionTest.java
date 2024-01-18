@@ -52,8 +52,7 @@ public class GeneralizedEmptyCellByContradictionTest {
                 () -> assertEquals(1, result.size(), "result.size()"),
                 () -> assertFalse(result.isExecuted(), "result.executed"),
                 () -> assertEquals(1, cell11.getState(), "cell 1, 1 state"),
-                () -> assertEquals(HCell.EMPTY, cell12.getState(), "cell 1, 2 state")
-        );
+                () -> assertEquals(HCell.EMPTY, cell12.getState(), "cell 1, 2 state"));
     }
 
     /**
@@ -69,8 +68,7 @@ public class GeneralizedEmptyCellByContradictionTest {
         System.out.println(puzzle.gridAsString());
         assertAll(
                 () -> assertEquals(1, result.size(), "result.size()"),
-                () -> assertTrue(result.isExecuted(), "result.executed")
-        );
+                () -> assertTrue(result.isExecuted(), "result.executed"));
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ypa.model.HCell;
-import ypa.model.KEntry;
+import ypa.model.HEntry;
 import ypa.model.HPuzzle;
 
 /**
@@ -137,42 +137,25 @@ public class PuzzlePanel extends javax.swing.JPanel {
      * @param delta_x x-offset for digit within cell
      * @param delta_y y-offset for digit within cell
      */
-    private void paintCell(final Graphics g, final HCell cell,
-            final int x, final int y, final int delta_x, final int delta_y) {
-        // set background if cell is marked
-        if (highlight && this.markedCells != null
-                && this.markedCells.contains(cell)) {
+    private void paintCell(final Graphics g, final HCell cell, final int x, final int y, final int delta_x,
+            final int delta_y) {
+        // Set background if cell is marked
+        if (highlight && this.markedCells != null && this.markedCells.contains(cell)) {
             g.setColor(Color.CYAN);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
         }
         if (selected != null && cell == selected) {
             g.setColor(Color.YELLOW);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
         }
 
-        // draw cell content, if not empty
+        // Draw cell content, if not empty
         if (cell.isBlocked()) {
             g.setColor(Color.BLACK);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
-            // draw diagonal
-            g.setColor(Color.WHITE);
-            g.drawLine(x, y - cellSize, x + cellSize, y);
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
         } else if (!cell.isEmpty()) {
-            // cell occupied by a symbol
-            // set color for symbol
-            Color color = Color.BLACK;
-            if (highlight) {
-                if (!cell.isOK()) {
-                    color = Color.RED;
-                } else if (puzzle.isSolved()) {
-                    color = Color.GREEN;
-                }
-            }
-            g.setColor(color);
-
+            // Cell occupied by a number
+            g.setColor(Color.BLACK); // Set color for numbers
             g.drawString(cell.toString(), x + delta_x, y - delta_y);
         }
     }

@@ -12,16 +12,17 @@ public abstract class ReasonerDecorator extends Reasoner {
     /** The reasoner being decorated. */
     protected Reasoner reasoner;
 
-    /* Rep. invariant
-     *  reasoner.puzzle == this.puzzle
+    /*
+     * Rep. invariant
+     * reasoner.puzzle == this.puzzle
      */
 
     /**
      * Constructs a reasoner for the given puzzle and reasoner.
      *
-     * @param puzzle  the puzzle to reason about
-     * @param reasoner  the reasoner to use before validity checking
-     * @throws IllegalArgumentException  if precondition failed
+     * @param puzzle   the puzzle to reason about
+     * @param reasoner the reasoner to use before validity checking
+     * @throws IllegalArgumentException if precondition failed
      * @pre {@code puzzle != null  && reasoner != null && reasoner.puzzle == puzzle}
      */
     public ReasonerDecorator(HPuzzle puzzle, final Reasoner reasoner) {

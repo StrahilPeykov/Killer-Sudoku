@@ -42,8 +42,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertEquals(0, result.size(), "result.size()"),
                 () -> assertTrue(result.isExecuted(), "result.executed"),
-                () -> assertFalse(puzzle.isSolved(), "puzzle solved")
-        );
+                () -> assertFalse(puzzle.isSolved(), "puzzle solved"));
     }
 
     /**
@@ -62,8 +61,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertEquals(3, result.size(), "result.size()"),
                 () -> assertTrue(result.isExecuted(), "result.executed"),
-                () -> assertTrue(puzzle.isSolved(), "puzzle solved")
-        );
+                () -> assertTrue(puzzle.isSolved(), "puzzle solved"));
     }
 
     /**
@@ -82,8 +80,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertNull(result, "result null"),
                 () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged")
-        );
+                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged"));
     }
 
     /**
@@ -102,8 +99,7 @@ public class FixpointReasonerTest {
         assertAll(
                 () -> assertNull(result, "result null"),
                 () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged")
-        );
+                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged"));
     }
 
 }

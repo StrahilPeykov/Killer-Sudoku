@@ -37,8 +37,7 @@ public class EmptyCellReasonerTest {
         CompoundCommand result = instance.applyToCell(cell);
         assertAll(
                 () -> assertEquals(0, result.size(), "result.size()"),
-                () -> assertFalse(result.isExecuted(), "result.executed")
-        );
+                () -> assertFalse(result.isExecuted(), "result.executed"));
     }
 
     /**
@@ -51,8 +50,7 @@ public class EmptyCellReasonerTest {
         CompoundCommand result = instance.apply();
         assertAll(
                 () -> assertEquals(0, result.size(), "result.size()"),
-                () -> assertTrue(result.isExecuted(), "result.executed")
-        );
+                () -> assertTrue(result.isExecuted(), "result.executed"));
     }
 
     private static class EmptyCellReasonerImpl extends EmptyCellReasoner {

@@ -36,7 +36,7 @@ public class HPuzzle {
     /** The puzzle's mode. */
     private Mode mode;
 
-    /** Smallest number allowed.{@code KCell.EMPTY < minNumber}. */
+    // Smallest number allowed.{@code KCell.EMPTY < minNumber}. 
     // private int minNumber = 1;
 
     /** Largest number in the puzzle sequence. */
@@ -174,11 +174,11 @@ public class HPuzzle {
         return grid.getCell(rowIndex, columnIndex);
     }
 
-    /**
-     * Gets the entries in this puzzle, so as to iterate over them.
-     *
-     * @return the entries of this puzzle as iterable
-     */
+    //    /**
+    //     * Gets the entries in this puzzle, so as to iterate over them.
+    //     *
+    //     * @return the entries of this puzzle as iterable 
+    //     */
     /*
      * public Iterable<KEntry> getEntries() {
      * return grid.getEntries();
