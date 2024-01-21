@@ -11,9 +11,12 @@ import ypa.model.KEntry;
 import ypa.model.KPuzzle;
 
 /**
- * A graphical view on a Kakuro puzzle state.
+ * A graphical view on a Hidato puzzle state.
+ * This class handles the rendering of the Hidato puzzle grid and cells,
+ * as well as user interactions through mouse events.
  *
  * @author Tom Verhoeff (Eindhoven University of Technology)
+ * @updated By <Your Name> - description of the update
  */
 public class PuzzlePanel extends javax.swing.JPanel {
 
@@ -48,12 +51,14 @@ public class PuzzlePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    /** Cell size in pixels */
+    // Class variables
+
+    // Size of each cell in the puzzle
     private final int cellSize = 35;
     // TODO: Consider making the cell size changeable by user
 
-    final int offsetX = cellSize; // margin for horizontal coordinates
-    final int offsetY = cellSize; // margin for vertical coordinates
+    final int offsetX = cellSize; // Horizontal margin
+    final int offsetY = cellSize; // Vertical margin
 
     /** The puzzle being manipulated */
     private KPuzzle puzzle;
@@ -137,32 +142,36 @@ public class PuzzlePanel extends javax.swing.JPanel {
      * @param delta_x x-offset for digit within cell
      * @param delta_y y-offset for digit within cell
      */
-    private void paintCell(final Graphics g, final KCell cell,
-            final int x, final int y, final int delta_x, final int delta_y) {
-        // set background if cell is marked
-        if (highlight && this.markedCells != null
-                && this.markedCells.contains(cell)) {
+    private void paintCell(final Graphics g, final KCell cell, final int x, final int y, final int delta_x,
+            final int delta_y) {
+        paintCellBackground(g, cell, x, y);
+        paintCellContent(g, cell, x, y, delta_x, delta_y);
+    }
+
+    private void paintCellBackground(Graphics g, KCell cell, int x, int y) {
+        // Check if the cell is marked and highlight accordingly
+        if (highlight && markedCells != null && markedCells.contains(cell)) {
             g.setColor(Color.CYAN);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
-        }
-        if (selected != null && cell == selected) {
-            g.setColor(Color.YELLOW);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
         }
 
-        // draw cell content, if not empty
+        // Highlight the selected cell
+        if (selected != null && cell == selected) {
+            g.setColor(Color.YELLOW);
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
+        }
+
+        // If the cell is blocked, paint it black
         if (cell.isBlocked()) {
             g.setColor(Color.BLACK);
-            g.fillRect(x + 1, y - cellSize + 1,
-                    cellSize - 1, cellSize - 1);
-            // draw diagonal
-            // g.setColor(Color.WHITE);
-            // g.drawLine(x, y - cellSize, x + cellSize, y);
-        } else if (!cell.isEmpty()) {
-            // cell occupied by a symbol
-            // set color for symbol
+            g.fillRect(x + 1, y - cellSize + 1, cellSize - 1, cellSize - 1);
+        }
+    }
+
+    private void paintCellContent(Graphics g, KCell cell, int x, int y, int delta_x, int delta_y) {
+        // Only proceed if the cell is not blocked and not empty
+        if (!cell.isBlocked() && !cell.isEmpty()) {
+            // Set the color based on the cell state
             Color color = Color.BLACK;
             if (highlight) {
                 if (!cell.isOK()) {
@@ -173,6 +182,7 @@ public class PuzzlePanel extends javax.swing.JPanel {
             }
             g.setColor(color);
 
+            // Draw the cell's content
             g.drawString(cell.toString(), x + delta_x, y - delta_y);
         }
     }
@@ -180,68 +190,16 @@ public class PuzzlePanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(java.awt.Color.DARK_GRAY);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        // g.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 24));
-        // Adjust font size for potentially two-digit numbers
-        Font font = new Font("Lucida Sans Typewriter", Font.BOLD, 24);
-        FontMetrics fm = g.getFontMetrics(font);
-        int maxNumberWidth = fm.charWidth('0') * 2; // Maximum width for two digits
-        if (maxNumberWidth > cellSize) {
-            // Reduce font size to fit two digits in the cell
-            float fontSize = font.getSize() * ((float) cellSize / maxNumberWidth);
-            font = font.deriveFont(fontSize);
-            fm = g.getFontMetrics(font);
-        }
-        g.setFont(font);
+        prepareGraphics(g);
+
         if (puzzle == null) {
-            g.setColor(Color.YELLOW);
-            g.drawString("No puzzle loaded", cellSize, cellSize);
+            drawEmptyPuzzleMessage(g);
             return;
         }
-        // puzzle != null
-        final int WIDTH = cellSize * puzzle.getColumnCount();
-        final int HEIGHT = (cellSize * puzzle.getRowCount());
 
-        g.setColor(new Color(250, 250, 240));
-        g.fillRect(offsetX - 20, offsetY - 20, WIDTH + 40, HEIGHT + 40);
+        drawPuzzleGrid(g);
+        drawCells(g, g.getFontMetrics());
 
-        // System.out.println(WIDTH + " " + HEIGHT + 30);
-        // WIDTH, HEIGHT includes top, left border for showing coordinates
-        // FontMetrics fm = g.getFontMetrics();
-        // final int delta_x = (cellSize - fm.charWidth('0')) / 2 + 1;
-        // final int delta_y = (cellSize - fm.getAscent() + fm.getDescent()) / 2;
-
-        g.setColor(Color.WHITE);
-        g.fillRect(cellSize, cellSize, WIDTH, HEIGHT);
-        g.setColor(java.awt.Color.BLACK);
-        // draw all horizontal separator lines
-        for (int r = 0; r <= puzzle.getRowCount(); ++r) {
-            final int y = r * cellSize + offsetY;
-            g.drawLine(offsetX, y, WIDTH + offsetX, y);
-        }
-        // draw all vertical separator lines
-        for (int c = 0; c <= puzzle.getColumnCount(); ++c) {
-            final int x = c * cellSize + offsetX;
-            g.drawLine(x, offsetY, x, HEIGHT + offsetY);
-        }
-        // draw cell background and contents
-        for (int r = 0; r != puzzle.getRowCount(); ++r) {
-            final int y = (r + 1) * cellSize + offsetY;
-            for (int c = 0; c != puzzle.getColumnCount(); ++c) {
-                final int x = c * cellSize + offsetX;
-                // x, y = coordinate of bottom-left corner
-                final KCell cell = puzzle.getCell(r, c);
-
-                String cellText = String.valueOf(cell.getState());
-                int textWidth = fm.stringWidth(cellText);
-                int textHeight = fm.getAscent();
-                int delta_x = (cellSize - textWidth) / 2 + 1;
-                int delta_y = (cellSize - textHeight + fm.getDescent()) / 2;
-
-                paintCell(g, cell, x, y, delta_x, delta_y);
-            }
-        }
         // draw entries sums
         // g.setColor(Color.WHITE);
         // g.setFont(new Font("Lucida Sans Typewriter", Font.PLAIN, 12));
@@ -274,6 +232,67 @@ public class PuzzlePanel extends javax.swing.JPanel {
         // final int sum = entry.getSpecification().getSum();
         // g.drawString(String.format("%2d", sum), x + dx, y - dy);
         // }
+    }
+
+    private void drawPuzzleGrid(Graphics g) {
+        final int WIDTH = cellSize * puzzle.getColumnCount();
+        final int HEIGHT = cellSize * puzzle.getRowCount();
+
+        g.setColor(Color.WHITE);
+        g.fillRect(cellSize, cellSize, WIDTH, HEIGHT);
+        g.setColor(java.awt.Color.BLACK);
+
+        // Draw horizontal and vertical separator lines
+        for (int r = 0; r <= puzzle.getRowCount(); ++r) {
+            final int y = r * cellSize + offsetY;
+            g.drawLine(offsetX, y, WIDTH + offsetX, y);
+        }
+        for (int c = 0; c <= puzzle.getColumnCount(); ++c) {
+            final int x = c * cellSize + offsetX;
+            g.drawLine(x, offsetY, x, HEIGHT + offsetY);
+        }
+    }
+
+    private void drawCells(Graphics g, FontMetrics fm) {
+        for (int r = 0; r != puzzle.getRowCount(); ++r) {
+            final int y = (r + 1) * cellSize + offsetY;
+            for (int c = 0; c != puzzle.getColumnCount(); ++c) {
+                final int x = c * cellSize + offsetX;
+                final KCell cell = puzzle.getCell(r, c);
+
+                int textWidth = fm.stringWidth(cell.toString());
+                int textHeight = fm.getAscent();
+                int delta_x = (cellSize - textWidth) / 2 + 1;
+                int delta_y = (cellSize - textHeight + fm.getDescent()) / 2;
+
+                paintCell(g, cell, x, y, delta_x, delta_y);
+            }
+        }
+    }
+
+    private void prepareGraphics(Graphics g) {
+        g.setColor(java.awt.Color.DARK_GRAY);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+        Font font = new Font("Lucida Sans Typewriter", Font.BOLD, 24);
+        FontMetrics fm = g.getFontMetrics(font);
+        int maxNumberWidth = fm.charWidth('0') * 2; // Maximum width for two digits
+
+        if (maxNumberWidth > cellSize) {
+            float fontSize = font.getSize() * ((float) cellSize / maxNumberWidth);
+            font = font.deriveFont(fontSize);
+        }
+        g.setFont(font);
+    }
+
+    private void drawEmptyPuzzleMessage(Graphics g) {
+        g.setColor(Color.YELLOW);
+        String message = "No puzzle loaded";
+        FontMetrics fm = g.getFontMetrics();
+        int messageWidth = fm.stringWidth(message);
+        int x = (getWidth() - messageWidth) / 2;
+        int y = getHeight() / 2;
+        g.drawString(message, x, y);
     }
 
     /**
