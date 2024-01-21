@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 /**
  * A rectangular grid of cells for a Kakuro puzzle,
- * with the list of hints.  A hint consists of a number
+ * with the list of hints. A hint consists of a number
  * that is the desired sum of the numbers appearing in
  * a group of horizontally or vertically adjacent cells.
  * Such a group is called an <em>entry</em>.
@@ -30,30 +30,34 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
     /** The entry specifications. */
     private final List<KEntry> entries;
 
-    /** Total sum and length of entries in a particular direction. */
-    private final EnumMap<Direction, KSpec> totals;
+    /** Initializing the neighbours list. */
+    private final List<HNeighbour> neighbours;
+
+    private int maxNum = 0;
 
     // Representation invariants:
-    //   nRows == matrix.size()
-    //   if nRows == 0
-    //       then nColumns == 0
-    //       else (\forall i; matrix.has(i); matrix.get(i).size() == nColumns)
-    //   this.entries refers only to non-blocked cells in the matrix
-    //   each empty cell occurs in exactly two entries,
-    //      one horizontal and one vertical
+    // nRows == matrix.size()
+    // if nRows == 0
+    // then nColumns == 0
+    // else (\forall i; matrix.has(i); matrix.get(i).size() == nColumns)
+    // this.entries refers only to non-blocked cells in the matrix
+    // each empty cell occurs in exactly two entries,
+    // one horizontal and one vertical
 
     /**
      * Constructs a grid from a given scanner.
      *
-     * @param scanner  the given scanner
-     * @throws NullPointerException  if {@code scanner == null}
-     * @throws IllegalArgumentException  if {@code scanner} does not yield
-     *     a valid Kakuro puzzle
+     * @param scanner the given scanner
+     * @throws NullPointerException     if {@code scanner == null}
+     * @throws IllegalArgumentException if {@code scanner} does not yield
+     *                                  a valid Kakuro puzzle
      * @pre {@code scanner != null} and it delivers a valid puzzle grid
      */
     public KGrid(final Scanner scanner) {
+
         matrix = new ArrayList<>();
         entries = KEntry.scanEntries(scanner);
+        neighbours = new ArrayList<>();
 
         // Initialize the grid to be just big enough to contain all entries.
 
@@ -63,7 +67,7 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
         nColumns = dim.getColumn();
 
         // 2. Initialize the matrix to all blocked cells.
-        for (int rowIndex = 0; rowIndex != nRows; ++rowIndex) {
+        for (int rowIndex = 0; rowIndex != nRows + 1; ++rowIndex) {
             final List<KCell> row = new ArrayList<>();
             matrix.add(row);
             for (int columnIndex = 0; columnIndex != nColumns; ++columnIndex) {
@@ -76,30 +80,25 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
         }
 
         // 3. Define the cell states and grouping according to entries.
-        totals = new EnumMap<>(Direction.class);
-        for (Direction direction : Direction.values()) {
-            totals.put(direction, new KSpec(0, 0));
-        }
         for (KEntry entry : entries) {
-            // update totals
-            KSpec old = totals.get(entry.getDirection());
-            totals.put(entry.getDirection(),
-                    new KSpec(
-                            old.getSum() + entry.getSpecification().getSum(),
-                            old.getLength()
-                                    + entry.getSpecification().getLength()
-                    )
-            );
             Location loc = entry.getLocation();
             for (int i = 0; i != entry.getSpecification().getLength(); ++i) {
                 final KCell cell = getCell(loc);
                 // TODO: check that cell is not already covered in this direction
                 cell.setState(KCell.EMPTY); // must be done before associate
                 associate(cell, entry);
-                loc = switch (entry.getDirection()) {
-                    case HORIZONTAL -> new Location(loc.getRow(), loc.getColumn() + 1);
-                    case VERTICAL -> new Location(loc.getRow() + 1, loc.getColumn());
-                };
+                maxNum += 1;
+                loc = new Location(loc.getRow(), loc.getColumn() + 1);
+            }
+        }
+
+        for (KEntry entry : entries) {
+            Location loc = entry.getLocation();
+            for (int i = 0; i != entry.getSpecification().getLength(); i++) {
+                final KCell cell = getCell(loc);
+                HNeighbour neighbour = new HNeighbour(cell, loc, maxNum, nRows, nColumns);
+                neighbours.add(neighbour);
+                loc = new Location(loc.getRow(), loc.getColumn() + 1);
             }
         }
 
@@ -114,6 +113,7 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
             scanner.next("=");
             KCell cell = new KCell(scanner); // temporary cell to get state
             this.getCell(location).setState(cell.getState());
+            this.getCell(location).setLock(true);
         }
     }
 
@@ -138,8 +138,8 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
     /**
      * Gets the cell at given coordinates.
      *
-     * @param rowIndex  the row coordinate to get from
-     * @param columnIndex  the column coordinate to get from
+     * @param rowIndex    the row coordinate to get from
+     * @param columnIndex the column coordinate to get from
      * @return cell at {@code rowIndex, columnIndex}
      * @pre {@code 0 <= rowIndex < getRows() &&
      *   0 <= columnIndex < getColumns()}
@@ -152,7 +152,7 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
     /**
      * Gets the cell at given location.
      *
-     * @param location  the location to get from
+     * @param location the location to get from
      * @return cell at {@code rowIndex, columnIndex}
      * @pre location appears in grid
      * @post {@code \result == } cell at location
@@ -169,8 +169,8 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
      * Puts a cell in a group.
      *
      * @param cell  the cell to put
-     * @param group  the group to put into
-     * @throws IllegalArgumentException  if precondition violated
+     * @param group the group to put into
+     * @throws IllegalArgumentException if precondition violated
      * @pre {@code cell != null && group != null &&
      *   ! cell.isElementOf(group) && ! group.contains(cell)}
      * @post {@code group.contains(cell)}
@@ -214,8 +214,10 @@ public class KGrid extends AbstractGroup implements Iterable<KCell> {
      */
     @Override
     public boolean isValid() {
-        for (KEntry entry : entries) {
-            if (!entry.isValid()) {
+        // Go over neighbour groups and check if they are valid
+        // instead of checking the whole grid
+        for (HNeighbour neigbour : neighbours) {
+            if (!neigbour.isValid()) {
                 return false;
             }
         }

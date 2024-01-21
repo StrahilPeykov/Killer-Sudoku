@@ -17,12 +17,13 @@ import java.util.regex.Pattern;
  * <li>Constructor sets location, direction, and specification.
  * <li>During puzzle set-up, cells are associated.
  * <li>During solving, all cells have been associated (see invariant Size),
- *   and should not change any more.
+ * and should not change any more.
  * </ol>
  *
  * @inv NoBlocked: {@code (\forall cell : this; ! cell.isBlocked)}
  *
- * @inv <br>Size: {@code this.getCount() == this.specification.getLength()}
+ * @inv <br>
+ *      Size: {@code this.getCount() == this.specification.getLength()}
  *
  * @author Tom Verhoeff (Eindhoven University of Technology)
  */
@@ -31,9 +32,6 @@ public class KEntry extends AbstractGroup {
     /** The location. */
     private final Location location;
 
-    /** The direction. */
-    private final Direction direction;
-
     /** The specification. */
     private final KSpec specification;
 
@@ -41,33 +39,26 @@ public class KEntry extends AbstractGroup {
      * Constructs a {@code KEntry} from a given location, direction, and
      * specification.
      *
-     * @param location  the given location
-     * @param direction  the given direction
-     * @param specification  the given specification
+     * @param location      the given location
+     * @param specification the given specification
      */
-    public KEntry(final Location location, final Direction direction, final KSpec specification) {
+    public KEntry(final Location location, final KSpec specification) {
         this.location = location;
-        this.direction = direction;
         this.specification = specification;
     }
 
     /**
      * Constructs a {@code KEntry} from a given scanner.
      *
-     * @param scanner  the given scanner
+     * @param scanner the given scanner
      */
     public KEntry(final Scanner scanner) {
         this.location = new Location(scanner);
-        this.direction = Direction.fromScanner(scanner);
         this.specification = new KSpec(scanner);
     }
 
     public Location getLocation() {
         return location;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
     public KSpec getSpecification() {
@@ -77,11 +68,11 @@ public class KEntry extends AbstractGroup {
     /**
      * Adds a given empty cell.
      *
-     * @param cell  the cell to add
+     * @param cell the cell to add
      * @pre {@code cell.isEmpty()}
      */
     @Override
-    public void add(final HCell cell) {
+    public void add(final KCell cell) {
         if (!cell.isEmpty()) {
             throw new IllegalArgumentException(getClass().getSimpleName()
                     + "add().pre failed: cell is not empty");
@@ -91,27 +82,23 @@ public class KEntry extends AbstractGroup {
 
     @Override
     public boolean isValid() {
-        for (HCell cell : this) {
+        int sum = 0;
+        for (KCell cell : this) {
+            if (!cell.isEmpty()) {
+                sum += cell.getState();
+            }
             // these cells are not blocked
             if (!cell.isEmpty() && this.getStateCount(cell.getState()) > 1) {
                 // digit occurs more than once
                 return false;
             }
         }
-        final int total = this.getTotal();
-        final int emptyCount = this.getStateCount(HCell.EMPTY);
-        final int expectedSum = this.specification.getSum();
-        if (total + emptyCount > expectedSum) {
-            // sum of digits filled in is too high
-            // N.B. empty cells will contain at least a 1
-            return false;
-        }
-        return emptyCount != 0 || total == expectedSum;
+        return true;
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", location, direction, specification);
+        return String.format("%s %s", location, specification);
     }
 
     /**
@@ -121,7 +108,6 @@ public class KEntry extends AbstractGroup {
      */
     public String toStringLong() {
         return "{ location: " + location
-                + "direction" + direction
                 + "specification" + specification
                 + " }";
     }
@@ -157,9 +143,9 @@ public class KEntry extends AbstractGroup {
      * Determine minimum number of rows and columns of a list of
      * {@code KEntry} items.
      *
-     * @param entries  the list
-     * @return  {@code \result.getRow() == number of rows} and
-     *     {@code \result.getColumn() == number of columns}
+     * @param entries the list
+     * @return {@code \result.getRow() == number of rows} and
+     *         {@code \result.getColumn() == number of columns}
      */
     public static Location dimensions(final List<KEntry> entries) {
         int maxRow = -1; // largest row coordinate encountered
@@ -168,28 +154,15 @@ public class KEntry extends AbstractGroup {
             final int row = entry.getLocation().getRow();
             final int column = entry.getLocation().getColumn();
             final int length = entry.getSpecification().getLength();
-            final int rowEnd = row + length;
             final int columnEnd = column + length;
-            switch (entry.getDirection()) {
-                case HORIZONTAL -> {
-                    if (row > maxRow) {
-                        maxRow = row;
-                    }
-                    if (columnEnd > maxColumn) {
-                        maxColumn = columnEnd;
-                    }
-                }
-                case VERTICAL -> {
-                    if (rowEnd > maxRow) {
-                        maxRow = rowEnd;
-                    }
-                    if (column > maxColumn) {
-                        maxColumn = column;
-                    }
-                }
-                default -> throw new IllegalStateException("unknown Direction: "
-                        + entry.getDirection());
+            // Might need to change this to be more accurate
+            if (row > maxRow) {
+                maxRow = row;
             }
+            if (columnEnd > maxColumn) {
+                maxColumn = columnEnd;
+            }
+
         }
         return new Location(maxRow, maxColumn);
     }

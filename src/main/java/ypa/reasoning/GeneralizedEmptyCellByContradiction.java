@@ -2,8 +2,8 @@ package ypa.reasoning;
 
 import ypa.command.CompoundCommand;
 import ypa.command.SetCommand;
-import ypa.model.HCell;
-import ypa.model.HPuzzle;
+import ypa.model.KCell;
+import ypa.model.KPuzzle;
 
 /**
  * When only one way of filling an empty cell does not lead to an invalid state
@@ -30,15 +30,15 @@ public class GeneralizedEmptyCellByContradiction extends EmptyCellReasoner {
      * @throws IllegalArgumentException if precondition failed
      * @pre {@code puzzle != null  && reasoner != null && reasoner.puzzle == puzzle}
      */
-    public GeneralizedEmptyCellByContradiction(HPuzzle puzzle, final Reasoner reasoner) {
+    public GeneralizedEmptyCellByContradiction(KPuzzle puzzle, final Reasoner reasoner) {
         super(puzzle);
         if (reasoner == null) {
-            throw new IllegalArgumentException(getClass().getSimpleName()
-                    + " constructor failed: reasoner is null");
+            throw new IllegalArgumentException(this.getClass().getSimpleName()
+                    + "setReasoner.pre failed: reasoning == null");
         }
         if (reasoner.puzzle != this.puzzle) {
-            throw new IllegalArgumentException(getClass().getSimpleName()
-                    + " constructor failed: reasoner's puzzle is not this puzzle");
+            throw new IllegalArgumentException(this.getClass().getSimpleName()
+                    + "setReasoner.pre failed: reasoning.puzzle != this.puzzle");
         }
         this.reasoner = reasoner;
     }
@@ -50,41 +50,47 @@ public class GeneralizedEmptyCellByContradiction extends EmptyCellReasoner {
      * @throws IllegalArgumentException if precondition failed
      * @pre {@code puzzle != null}
      */
-    public GeneralizedEmptyCellByContradiction(HPuzzle puzzle) {
+    public GeneralizedEmptyCellByContradiction(KPuzzle puzzle) {
         super(puzzle);
-        this.reasoner = this;
+        reasoner = this;
     }
 
     @Override
-    CompoundCommand applyToCell(final HCell cell) throws NullPointerException {
+    CompoundCommand applyToCell(final KCell cell) throws NullPointerException {
         if (!puzzle.isValid()) {
             return null;
         }
         CompoundCommand result = super.applyToCell(cell);
-        CompoundCommand candidateForcedCommand = null;
+        CompoundCommand candidateForcedCommand = null; // command that worked, if any
 
-        int minNumber = 1; // In Hidato, the minimum number is always 1
-        for (int state = minNumber; state <= puzzle.getMaxNumber(); ++state) {
+        for (int state = puzzle.getMinNumber(); state <= puzzle.getMaxNumber(); ++state) {
             CompoundCommand command = new CompoundCommand();
             command.add(new SetCommand(cell, state));
             command.execute();
             CompoundCommand compound = reasoner.apply();
             if (compound != null) {
+                // no contradiction
                 command.add(compound);
             }
             command.revert();
             if (compound != null) {
+                // no contraction; command is a candidate
                 if (candidateForcedCommand == null) {
+                    // first command that is valid; memorize it
                     candidateForcedCommand = command;
                 } else {
+                    // multiple valid ways of filling cell; no forced command
                     return result;
                 }
             }
         }
+        // at most one command worked
 
         if (candidateForcedCommand == null) {
+            // all commands failed: puzzle not solvable
             return null;
         } else {
+            // exactly one command worked
             result.add(candidateForcedCommand);
             return result;
         }

@@ -1,7 +1,7 @@
 package ypa.reasoning;
 
 import ypa.command.CompoundCommand;
-import ypa.model.HPuzzle;
+import ypa.model.KPuzzle;
 
 /**
  * Base class for reasoning strategies (reasoners).
@@ -19,7 +19,7 @@ import ypa.model.HPuzzle;
 public class Reasoner {
 
     /** The puzzle to apply the reasoner to. */
-    protected HPuzzle puzzle;
+    protected KPuzzle puzzle;
 
     // Initially there was, on purpose, no constructor that sets the puzzle,
     // because then every subclass must define that constructor as well.
@@ -45,7 +45,7 @@ public class Reasoner {
      * @throws IllegalArgumentException if {@code puzzle == null}
      * @pre {@code puzzle != null}
      */
-    public Reasoner(final HPuzzle puzzle) {
+    public Reasoner(final KPuzzle puzzle) {
         if (puzzle == null) {
             throw new IllegalArgumentException(this.getClass().getSimpleName()
                     + "().pre failed: puzzle == null");

@@ -1,10 +1,9 @@
 package ypa.solvers;
 
-import ypa.model.HPuzzle;
-import ypa.reasoning.EntryWithOneEmptyCell;
+import ypa.model.KPuzzle;
+import ypa.reasoning.BasicEmptyCellByContradiction;
 import ypa.reasoning.FixpointReasoner;
 import ypa.reasoning.Reasoner;
-import ypa.reasoning.ReasonerTest;
 import ypa.solvers.BacktrackSolver;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,71 +14,69 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test cases for {@link BacktrackSolver}.
- *
- * @author wstomv
+ * Unit tests for the BacktrackSolver class.
  */
 public class BacktrackSolverTest {
 
-    private HPuzzle puzzle;
+    private KPuzzle puzzle;
 
+    /**
+     * Sets up the testing environment before each test.
+     * Initializes a puzzle with a predefined state for testing.
+     */
     @BeforeEach
     public void setUp() {
-        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
+        String puzzleState = """
+                a 0 3
+                b 0 3
+                c 0 3
+                """;
+        puzzle = new KPuzzle(new Scanner(puzzleState), "Test");
     }
 
     /**
-     * Test of solve method, of class BacktrackSolver.
+     * Tests solving a puzzle without using any reasoning strategy.
      */
     @Test
     public void testSolveWithoutReasoner() {
-        System.out.println("solve w/o reasoner");
-        BacktrackSolver instance = new BacktrackSolver(puzzle, null);
-        boolean expResult = true;
-        System.out.println(puzzle.gridAsString());
-        boolean result = instance.solve();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertEquals(expResult, result, "return value"),
-                () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(4, instance.getCommands().size(), "commands size"));
+        testSolverWithReasoner(null, 9, "solve w/o reasoner");
     }
 
     /**
-     * Test of solve method, of class BacktrackSolver.
+     * Tests solving a puzzle using the BasicEmptyCellByContradiction reasoning
+     * strategy.
      */
     @Test
-    public void testSolveWithSimpleReasoner() {
-        System.out.println("solve with simple reasoner");
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        BacktrackSolver instance = new BacktrackSolver(puzzle, reasoner);
-        boolean expResult = true;
-        System.out.println(puzzle.gridAsString());
-        boolean result = instance.solve();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertEquals(expResult, result, "return value"),
-                () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(5, instance.getCommands().size(), "commands size"));
+    public void testSolveWithBasicEmptyCellByContradiction() {
+        Reasoner reasoner = new BasicEmptyCellByContradiction(puzzle);
+        testSolverWithReasoner(reasoner, 15, "solve with "
+                + "BasicEmptyCellByContradiction reasoner");
     }
 
     /**
-     * Test of solve method, of class BacktrackSolver.
+     * Tests solving a puzzle using both BasicEmptyCellByContradiction
+     * and FixpointReasoner strategies.
      */
     @Test
-    public void testSolveWithFixpointReasoner() {
-        System.out.println("solve with fixpoint");
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        reasoner = new FixpointReasoner(puzzle, reasoner);
-        BacktrackSolver instance = new BacktrackSolver(puzzle, reasoner);
+    public void testSolveWithBasicEmptyCellByContradictionAndFixpointReasoner() {
+        Reasoner reasonerBasic = new BasicEmptyCellByContradiction(puzzle);
+        FixpointReasoner reasoner = new FixpointReasoner(puzzle, reasonerBasic);
+        testSolverWithReasoner(reasoner, 13, "solve with "
+                + "BasicEmptyCellByContradiction and FixpointReasoner");
+    }
+
+    private void testSolverWithReasoner(Reasoner reasoner, int expectedCommandSize,
+            String message) {
+        System.out.println(message);
+        BacktrackSolver solver = new BacktrackSolver(puzzle, reasoner);
         boolean expResult = true;
         System.out.println(puzzle.gridAsString());
-        boolean result = instance.solve();
+        boolean result = solver.solve();
         System.out.println(puzzle.gridAsString());
         assertAll(
                 () -> assertEquals(expResult, result, "return value"),
                 () -> assertTrue(puzzle.isSolved(), "puzzle solved"),
-                () -> assertEquals(3, instance.getCommands().size(), "commands size"));
+                () -> assertEquals(expectedCommandSize,
+                        solver.getCommands().size(), "commands size"));
     }
-
 }

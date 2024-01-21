@@ -14,12 +14,8 @@ public class Histogram extends HashMap<Integer, Integer> {
     /** Constructs an empty histogram. */
     public Histogram() {
         super();
-        // Initialize counts for blocked and empty cells
-        put(HCell.BLOCKED, 0);
-        put(HCell.EMPTY, 0);
-        // Initialize counts for numbered cells if needed
-        // For example, for numbers 1 to N, where N is the maximum number in the puzzle
-
+        put(KCell.BLOCKED, 0);
+        put(KCell.EMPTY, 0);
     }
 
     /**
@@ -30,7 +26,11 @@ public class Histogram extends HashMap<Integer, Integer> {
      */
     @Override
     public Integer get(Object key) {
-        return super.getOrDefault(key, 0);
+        Integer current = super.get(key);
+        if (current == null) {
+            current = 0;
+        }
+        return current;
     }
 
     /**
@@ -38,9 +38,13 @@ public class Histogram extends HashMap<Integer, Integer> {
      *
      * @param state state whose count changes
      * @param delta the amount of change
+     * @pre {@code true}
+     * @modifies {@code this}
+     * @post {@code get(state) == \old(get(state) + delta) &&}<br>
+     *       {@code (\forall CellState s; s != state; get(s) == \old(get(s)))}
      */
     public void adjust(final int state, final int delta) {
-        this.put(state, get(state) + delta);
+        put(state, get(state) + delta);
     }
 
 }

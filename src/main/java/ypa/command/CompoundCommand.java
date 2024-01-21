@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ypa.model.HCell;
+import ypa.model.KCell;
 
 /**
  * A compound command consists of a sequence of commands.
@@ -24,6 +24,7 @@ public class CompoundCommand extends Command {
         this(false);
     }
 
+
     /**
      * Constructs a compound command.
      *
@@ -39,9 +40,9 @@ public class CompoundCommand extends Command {
      * ignoring {@code null} commands.
      * A {@code CompoundCommand} is just added "as is".
      *
-     * @param command the command to add
-     * @throws IllegalStateException if execution state of added command
-     *                               does not match that of this compound command
+     * @param command  the command to add
+     * @throws IllegalStateException  if execution state of added command
+     *   does not match that of this compound command
      * @pre {@code command != null \implies
      *   this.isExecuted() == command.isExecuted()}
      */
@@ -62,10 +63,10 @@ public class CompoundCommand extends Command {
     /**
      * Adds the commands in a given compound command at the end of the sequence.
      *
-     * @param compound the compound command to add
-     * @throws IllegalArgumentException if {@code compound == null}
-     * @throws IllegalStateException    if execution state of {@code compound}
-     *                                  does not match that of this compound command
+     * @param compound  the compound command to add
+     * @throws IllegalArgumentException  if {@code compound == null}
+     * @throws IllegalStateException  if execution state of {@code compound}
+     *   does not match that of this compound command
      * @pre {@code compound != null &&
      *   this.isExecuted() == compound.isExecuted()}
      */
@@ -120,8 +121,8 @@ public class CompoundCommand extends Command {
      * @return collection of cells involved in this command
      */
     @Override
-    public Collection<HCell> getCells() {
-        final Collection<HCell> result = super.getCells();
+    public Collection<KCell> getCells() {
+        final Collection<KCell> result = super.getCells();
         for (final Command command : sequence) {
             result.addAll(command.getCells());
         }

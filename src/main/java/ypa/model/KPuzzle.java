@@ -11,7 +11,7 @@ import java.util.Scanner;
  * <ul>
  * <li>a name;
  * <li>minimum and maximum value for cell states,
- *   the minimum is at least one, and the maximum is at least the minimum;
+ * the minimum is at least one, and the maximum is at least the minimum;
  * <li>a mode of operation;
  * <li>a grid of cells.
  * </ul>
@@ -40,7 +40,7 @@ public class KPuzzle {
     private int minNumber = 1;
 
     /** Largest number allowed.{@code minNumber <= maxNumber}. */
-    private int maxNumber = 9;
+    private int maxNumber;
 
     /** The grid of cells. */
     private final KGrid grid;
@@ -50,13 +50,24 @@ public class KPuzzle {
      * and with a given name.
      * The actual dimensions are determined from the input.
      *
-     * @param scanner  the given scanner
-     * @param name  the given name
+     * @param scanner the given scanner
+     * @param name    the given name
      */
     public KPuzzle(final Scanner scanner, final String name) {
         this.name = name;
         this.mode = Mode.VIEW;
         this.grid = new KGrid(scanner);
+
+        // sets the maximum number of cells
+        int cellCount = 0;
+        for (KCell cell : grid) {
+            if (!cell.isBlocked()) {
+                cellCount++;
+                System.out.println(cell.getLocation());
+            }
+        }
+
+        this.maxNumber = cellCount;
     }
 
     public String getName() {
@@ -64,10 +75,10 @@ public class KPuzzle {
     }
 
     /**
-     * Sets the name of this puzzle.  Only allowed in edit mode.
+     * Sets the name of this puzzle. Only allowed in edit mode.
      *
-     * @param name  the new name
-     * @throws IllegalStateException  if not in edit mode
+     * @param name the new name
+     * @throws IllegalStateException if not in edit mode
      * @pre puzzle is in edit mode
      */
     public void setName(String name) {
@@ -110,8 +121,8 @@ public class KPuzzle {
      * Only allowed in edit mode.
      *
      * @param minNumber the new minimum number
-     * @throws IllegalStateException  if not in edit mode
-     * @throws IllegalArgumentException  if {@code minNumber < 1}
+     * @throws IllegalStateException    if not in edit mode
+     * @throws IllegalArgumentException if {@code minNumber < 1}
      * @pre puzzle is in edit mode and {@code minNumber >= 1}
      */
     public void setMinNumber(int minNumber) {
@@ -141,8 +152,8 @@ public class KPuzzle {
      * Only allowed in edit mode.
      *
      * @param maxNumber the new maximum number
-     * @throws IllegalStateException  if not in edit mode
-     * @throws IllegalArgumentException  if {@code maxNumber < getMinNumber()}
+     * @throws IllegalStateException    if not in edit mode
+     * @throws IllegalArgumentException if {@code maxNumber < getMinNumber()}
      * @pre puzzle is in edit mode and {@code maxNumber >= getMinNumber()}
      */
     public void setMaxNumber(int maxNumber) {
@@ -161,7 +172,7 @@ public class KPuzzle {
     /**
      * Checks whether a given number is valid.
      *
-     * @param n  the number to check
+     * @param n the number to check
      * @return whether {@code n} is valid
      */
     public boolean isValidNumber(int n) {
@@ -173,13 +184,13 @@ public class KPuzzle {
      * That is, whether it adheres to the rules:
      * <ul>
      * <li>Each non-blocked cell is either empty or contains a valid number
-     *   (see {@link ypa.model.KPuzzle#isValidNumber(int)})</li>
+     * (see {@link ypa.model.KPuzzle#isValidNumber(int)})</li>
      * <li>For each (horizontal or vertical) entry, the numbers appearing in it
-     *   are all distinct</li>
+     * are all distinct</li>
      * <li>For each (horizontal or vertical) entry with at least one empty cell,
-     *   the sum of the numbers it contains sums to less than the specified total
+     * the sum of the numbers it contains sums to less than the specified total
      * <li>For each (horizontal or vertical) entry without empty cells,
-     *   the sum of the numbers it contains equals the specified total
+     * the sum of the numbers it contains equals the specified total
      * </ul>
      *
      * @return whether the current state of this puzzle is valid
@@ -212,26 +223,32 @@ public class KPuzzle {
      * @return number of rows
      */
     public int getRowCount() {
-        return grid.getRowCount();
+        // [ATA change]
+        return (grid.getRowCount() + 1);
     }
 
     /**
      * Returns whether a coordinate pair is in the puzzle's grid.
      *
-     * @param rowIndex  the row index
-     * @param columnIndex  the column index
+     * @param rowIndex    the row index
+     * @param columnIndex the column index
      * @return whether {@code (row, column)} belongs to the grid
      */
     public boolean has(final int rowIndex, final int columnIndex) {
-        return 0 <= rowIndex && rowIndex < grid.getRowCount()
+        // System.out.println(rowIndex + " -& " + columnIndex + " , " +
+        // grid.getRowCount());
+        // was:
+        // return 0 <= rowIndex && rowIndex < grid.getRowCount()
+        // && 0 <= columnIndex && columnIndex < grid.getColumnCount();
+        return 0 <= rowIndex && rowIndex < getRowCount()
                 && 0 <= columnIndex && columnIndex < grid.getColumnCount();
     }
 
     /**
      * Gets the cell at given coordinates.
      *
-     * @param rowIndex  the row coordinate to get from
-     * @param columnIndex  the column coordinate to get from
+     * @param rowIndex    the row coordinate to get from
+     * @param columnIndex the column coordinate to get from
      * @return cell at {@code rowIndex, columnIndex}
      * @pre {@code 0 <= rowIndex < getRows() &&
      *   0 <= columnIndex < getColumns()}
@@ -257,7 +274,7 @@ public class KPuzzle {
     /**
      * Gets number of cells with a given state.
      *
-     * @param state  the given state
+     * @param state the given state
      * @return number of cells with state {@code state}
      * @post {@code \result == (\num_of Cell cell : getCells();
      *   cell.getState() == state)}
@@ -285,7 +302,7 @@ public class KPuzzle {
     /**
      * Makes a descriptor for an empty puzzle of given size.
      *
-     * @param size  the given size
+     * @param size the given size
      * @return descriptor string for empty puzzle of {@code size}
      */
     public static String makeEmptyDescriptor(int size) {

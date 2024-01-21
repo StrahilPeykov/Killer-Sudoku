@@ -1,7 +1,7 @@
 package ypa.reasoning;
 
 import ypa.command.CompoundCommand;
-import ypa.model.HPuzzle;
+import ypa.model.KPuzzle;
 
 /**
  * A reasoner that repeatedly applies a given reasoner
@@ -14,7 +14,7 @@ import ypa.model.HPuzzle;
  */
 public class FixpointReasoner extends ReasonerDecorator {
 
-    public FixpointReasoner(HPuzzle puzzle, Reasoner reasoner) {
+    public FixpointReasoner(KPuzzle puzzle, Reasoner reasoner) {
         super(puzzle, reasoner);
     }
 

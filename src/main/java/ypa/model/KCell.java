@@ -28,6 +28,9 @@ public class KCell {
     /** The cell's state. */
     private int state;
 
+    /** Locked state of the cell. */
+    private boolean isLocked = false;
+
     /**
      * The groups to which this cell belongs.
      * The first group will be the whole grid.
@@ -43,7 +46,7 @@ public class KCell {
     /**
      * Constructs a cell with a given state.
      *
-     * @param state  state
+     * @param state state
      * @pre {@code state} is a valid state
      */
     public KCell(final int state) {
@@ -59,7 +62,7 @@ public class KCell {
     /**
      * Constructs a cell with a state given by a string.
      *
-     * @param state  state
+     * @param state state
      */
     public KCell(final String state) {
         this(fromString(state));
@@ -68,7 +71,7 @@ public class KCell {
     /**
      * Constructs a cell from a given scanner.
      *
-     * @param scanner  the given scanner
+     * @param scanner the given scanner
      */
     public KCell(final Scanner scanner) {
         this(scanner.next());
@@ -78,10 +81,18 @@ public class KCell {
         return state;
     }
 
+    public void setLock(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
+
+    public boolean getLockState() {
+        return this.isLocked;
+    }
+
     /**
      * Sets a new cell state.
      *
-     * @param state  the new state
+     * @param state the new state
      * @pre {@code state} is valid
      */
     public void setState(int state) {
@@ -161,7 +172,7 @@ public class KCell {
     /**
      * Returns whether this cell is associated with a given group.
      *
-     * @param group  the group to check
+     * @param group the group to check
      * @return whether {@code this} is element of {@code group}
      */
     public boolean isContainedIn(final AbstractGroup group) {
@@ -171,7 +182,7 @@ public class KCell {
     /**
      * Adds a group containing this cell.
      *
-     * @param group  the group to add
+     * @param group the group to add
      * @pre {@code group != null && ! isElementOf(group)}
      * @modifies {@code this}
      * @post {@code isElementOf(group)}
@@ -183,9 +194,9 @@ public class KCell {
     /**
      * Converts string to cell state.
      *
-     * @param s  string to convert
+     * @param s string to convert
      * @return cell state corresponding to s
-     * @throws IllegalArgumentException  if invalid string
+     * @throws IllegalArgumentException if invalid string
      */
     public static int fromString(final String s) {
         switch (s) {

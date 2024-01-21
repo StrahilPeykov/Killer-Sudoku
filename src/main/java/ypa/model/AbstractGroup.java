@@ -10,16 +10,16 @@ import java.util.List;
  *
  * @author Tom Verhoeff (Eindhoven University of Technology)
  */
-public abstract class AbstractGroup implements Iterable<HCell> {
+public abstract class AbstractGroup implements Iterable<KCell> {
 
     /** The cells in the group. */
-    private final List<HCell> cells;
+    private final List<KCell> cells;
 
     /** How often each cell's state occurs in the group. */
     private final Histogram counts;
 
-    // Total value in all non-blocked cells.
-    // private int total;
+    /** Total value in all non-blocked cells. */
+    private int total;
 
     // Private invariants
     // (\forall state : CellState.values();
@@ -32,18 +32,17 @@ public abstract class AbstractGroup implements Iterable<HCell> {
     public AbstractGroup() {
         cells = new ArrayList<>();
         counts = new Histogram();
+        total = 0;
     }
 
-    //    /**
-    //     * Gets the total value of all cells in the group.
-    //     *
-    //     * @return {@code (\sum cell : this; cell.getState())}
-    //     */
-    /*
-     * public int getTotal() {
-     * return total;
-     * }
+    /**
+     * Gets the total value of all cells in the group.
+     *
+     * @return {@code (\sum cell : this; cell.getState())}
      */
+    public int getTotal() {
+        return total;
+    }
 
     /**
      * Returns whether this group contains a given cell.
@@ -51,7 +50,7 @@ public abstract class AbstractGroup implements Iterable<HCell> {
      * @param cell the cell to check
      * @return whether {@code this} contains {@code cell}
      */
-    public boolean contains(final HCell cell) {
+    public boolean contains(final KCell cell) {
         return cells.contains(cell);
     }
 
@@ -60,21 +59,30 @@ public abstract class AbstractGroup implements Iterable<HCell> {
      *
      * @param cell the cell to add
      * @pre {@code cell != null}
+     * @post {@code this == \old(this + [cell])}
      */
-    void add(final HCell cell) {
+    void add(final KCell cell) {
         cells.add(cell);
-        counts.adjust(cell.getState(), +1);
+        int state = cell.getState();
+        counts.adjust(state, +1);
+        if (state != KCell.BLOCKED) {
+            total += state;
+        }
     }
 
     /**
-     * Updates this group when a cell changes state.
+     * Updates this group when a cell is about to change state.
      *
-     * @param cell     the cell that triggered the update
+     * @param cell     the cell that triggered the update, in its old state
      * @param newState the new state for {@code cell}
+     * @pre {@code cell != null}
+     * @post {@code counts have been updated}
      */
-    public void update(final HCell cell, final int newState) {
-        counts.adjust(cell.getState(), -1);
+    public void update(final KCell cell, final int newState) {
+        int state = cell.getState();
+        counts.adjust(state, -1);
         counts.adjust(newState, +1);
+        total += -state + newState;
     }
 
     /**
@@ -112,7 +120,7 @@ public abstract class AbstractGroup implements Iterable<HCell> {
      * Returns an iterator over this group.
      */
     @Override
-    public Iterator<HCell> iterator() {
+    public Iterator<KCell> iterator() {
         return cells.iterator();
     }
 

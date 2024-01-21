@@ -47,7 +47,7 @@ public class Location {
         Pattern original = scanner.delimiter();
         scanner.skip("\\p{javaWhitespace}*");
         scanner.useDelimiter("");
-        row = scanner.next("[a-zA-Z]").toLowerCase().charAt(0) - 'a' + 1;
+        row = scanner.next("[a-zA-Z]").toLowerCase().charAt(0) - 'a';
         scanner.useDelimiter(original);
         column = scanner.nextInt();
     }
@@ -72,7 +72,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return String.format("%s%2d", (char) ('a' + row - 1), column);
+        return String.format("%s%2d", (char) ('a' + row), column);
     }
 
     public String toStringLong() {

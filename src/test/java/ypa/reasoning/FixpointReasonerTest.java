@@ -2,104 +2,106 @@ package ypa.reasoning;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import ypa.command.CompoundCommand;
-import ypa.model.HCell;
-import ypa.model.HPuzzle;
-import ypa.reasoning.EntryWithOneEmptyCell;
-import ypa.reasoning.FixpointReasoner;
-import ypa.reasoning.Reasoner;
+import ypa.model.KCell;
+import ypa.model.KPuzzle;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Test cases for {@link FixpointReasoner}.
- *
- * @author wstomv
+ * These tests validate the behavior of the FixpointReasoner with various puzzle
+ * states,
+ * ensuring correct application of the reasoning strategy.
  */
 public class FixpointReasonerTest {
 
-    private HPuzzle puzzle;
+        private KPuzzle initialPuzzleState;
 
-    @BeforeEach
-    public void setUp() {
-        puzzle = new HPuzzle(new Scanner(ReasonerTest.PUZZLE), "Test");
-    }
+        /**
+         * Sests up the test puzzle.
+         */
+        @BeforeEach
+        void setUp() {
+                initialPuzzleState = new KPuzzle(new Scanner("""
+                                a 0 3
+                                b 0 3
+                                c 0 3
+                                =
+                                a 0 = 1
+                                a 2 = 3
+                                b 0 = 6
+                                b 1 = 5
+                                b 2 = 4
+                                """), "Test");
+        }
 
-    /**
-     * Test of apply method, of class FixpointReasoner.
-     */
-    @Test
-    public void testApplyEmpty() {
-        System.out.println("apply empty");
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
-        System.out.println(puzzle.gridAsString());
-        CompoundCommand result = instance.apply();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertEquals(0, result.size(), "result.size()"),
-                () -> assertTrue(result.isExecuted(), "result.executed"),
-                () -> assertFalse(puzzle.isSolved(), "puzzle solved"));
-    }
+        /**
+         * Tests the apply method with an initial empty state.
+         * Verifies the result size, execution status, and puzzle solution state.
+         */
+        @Test
+        public void testApplyEmpty() {
+                Reasoner reasoner = new BasicEmptyCellByContradiction(initialPuzzleState);
+                FixpointReasoner instance = new FixpointReasoner(initialPuzzleState, reasoner);
+                CompoundCommand result = instance.apply();
+                assertAll(
+                                () -> assertEquals(1, result.size(), "Result size should be 1"),
+                                () -> assertTrue(result.isExecuted(), "Result should be executed"),
+                                () -> assertFalse(initialPuzzleState.isSolved(), "Puzzle should not be solved"));
+        }
 
-    /**
-     * Test of apply method, of class FixpointReasoner.
-     */
-    @Test
-    public void testApplySolved() {
-        System.out.println("apply solved");
-        HCell cell11 = puzzle.getCell(1, 1);
-        cell11.setState(1);
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
-        System.out.println(puzzle.gridAsString());
-        CompoundCommand result = instance.apply();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertEquals(3, result.size(), "result.size()"),
-                () -> assertTrue(result.isExecuted(), "result.executed"),
-                () -> assertTrue(puzzle.isSolved(), "puzzle solved"));
-    }
+        /**
+         * Tests the apply method on a puzzle that is already solved.
+         * Checks for the result size and execution status.
+         */
+        @Test
+        public void testApplySolved() {
+                KCell cell = initialPuzzleState.getCell(0, 1);
+                cell.setState(2);
+                Reasoner reasoner = new BasicEmptyCellByContradiction(initialPuzzleState);
+                FixpointReasoner instance = new FixpointReasoner(initialPuzzleState, reasoner);
+                CompoundCommand result = instance.apply();
+                assertAll(
+                                () -> assertEquals(0, result.size(), "Result size should be 0"),
+                                () -> assertTrue(result.isExecuted(), "Result should be executed"),
+                                () -> assertFalse(initialPuzzleState.isSolved(), "Puzzle should not be solved"));
+        }
 
-    /**
-     * Test of apply method, of class FixpointReasoner.
-     */
-    @Test
-    public void testApplyUnsolvable1() {
-        System.out.println("apply immediately unsolvable");
-        HCell cell = puzzle.getCell(2, 1);
-        cell.setState(2);
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
-        System.out.println(puzzle.gridAsString());
-        CompoundCommand result = instance.apply();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertNull(result, "result null"),
-                () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged"));
-    }
+        /**
+         * Tests the apply method on a puzzle that becomes unsolvable.
+         * Verifies the result size, puzzle solution state, and state count.
+         */
+        @Test
+        public void testApplyUnsolvable1() {
+                KCell cell = initialPuzzleState.getCell(2, 1);
+                cell.setState(8);
+                Reasoner reasoner = new BasicEmptyCellByContradiction(initialPuzzleState);
+                FixpointReasoner instance = new FixpointReasoner(initialPuzzleState, reasoner);
+                CompoundCommand result = instance.apply();
+                assertAll(
+                                () -> assertEquals(3, result.size(), "Result "
+                                                + "size should be 3"),
+                                () -> assertTrue(initialPuzzleState.isSolved(), "Puzzle "
+                                                + "should be solved"),
+                                () -> assertEquals(0, initialPuzzleState.getStateCount(KCell.EMPTY),
+                                                "No empty cells should remain"));
+        }
 
-    /**
-     * Test of apply method, of class FixpointReasoner.
-     */
-    @Test
-    public void testApplyUnsolvable2() {
-        System.out.println("apply indirectly unsolvable");
-        HCell cell = puzzle.getCell(1, 2);
-        cell.setState(1);
-        Reasoner reasoner = new EntryWithOneEmptyCell(puzzle);
-        FixpointReasoner instance = new FixpointReasoner(puzzle, reasoner);
-        System.out.println(puzzle.gridAsString());
-        CompoundCommand result = instance.apply();
-        System.out.println(puzzle.gridAsString());
-        assertAll(
-                () -> assertNull(result, "result null"),
-                () -> assertFalse(puzzle.isSolved(), "puzzle not solved"),
-                () -> assertEquals(3, puzzle.getStateCount(HCell.EMPTY), "puzzle unchanged"));
-    }
-
+        /**
+         * Tests the apply method on a puzzle that is unsolvable from the start.
+         * Expects a null result and verifies that the puzzle is not solved.
+         */
+        @Test
+        public void testApplyUnsolvable2() {
+                KCell cell = initialPuzzleState.getCell(0, 1);
+                cell.setState(1);
+                Reasoner reasoner = new BasicEmptyCellByContradiction(initialPuzzleState);
+                FixpointReasoner instance = new FixpointReasoner(initialPuzzleState, reasoner);
+                CompoundCommand result = instance.apply();
+                assertAll(
+                                () -> assertNull(result, "Result should be null"),
+                                () -> assertFalse(initialPuzzleState.isSolved(), "Puzzle should not be solved"));
+        }
 }

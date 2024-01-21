@@ -5,31 +5,29 @@ import java.util.Stack;
 /**
  * Facilities for an undo-redo mechanism, on the basis of commands.
  *
- * <!--//# BEGIN TODO: Names, student IDs, group name, and date-->
- * Ole Wouters 1413996, Mila van Bokhoven 1754238,
- * Tunay Ata Gök XXXXXXX, Borna Simic XXXXXXX,
- * Group 58, 16/01/2024
- * <!--//# END TODO-->
+<!--//# BEGIN TODO: Names, student IDs, group name, and date-->
+Ole Wouters 1413996, Mila van Bokhoven 1754238,
+Tunay Ata Gök XXXXXXX, Borna Simic XXXXXXX,
+Group 58, 16/01/2024
+<!--//# END TODO-->
  */
 public class UndoRedo {
 
-    // # BEGIN TODO: Representation in terms of instance variables, incl. rep. inv.
+    //# BEGIN TODO: Representation in terms of instance variables, incl. rep. inv.
     /**
      * The undo stack for all commands that can be undone.
-     * 
-     * @invariant for all the commands on this stack it holds that they
-     *            are executed and that they can be undone.
-     */
+     *@invariant for all the commands on this stack it holds that they 
+     * are executed and that they can be undone.
+    */
     private Stack<Command> undoStack = new Stack<>();
-
-    /**
-     * The redo stack for all undone commands that can be redone.
-     * 
-     * @invariant for all the commands on this stack it holds that they
-     *            are unexecuted and can be executed again.
-     */
+    
+    /**     
+    * The redo stack for all undone commands that can be redone.
+    * @invariant for all the commands on this stack it holds that they 
+    * are unexecuted and can be executed again.
+    */
     private Stack<Command> redoStack = new Stack<>();
-    // # END TODO
+    //# END TODO
 
     /**
      * Returns whether an {@code undo} is possible.
@@ -37,9 +35,9 @@ public class UndoRedo {
      * @return whether {@code undo} is possible
      */
     public boolean canUndo() {
-        // # BEGIN TODO: Implementation of canUndo
+        //# BEGIN TODO: Implementation of canUndo
         return !undoStack.isEmpty();
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -48,9 +46,9 @@ public class UndoRedo {
      * @return {@code redo().pre}
      */
     public boolean canRedo() {
-        // # BEGIN TODO: Implementation of canRedo
+        //# BEGIN TODO: Implementation of canRedo
         return !redoStack.isEmpty();
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -61,16 +59,16 @@ public class UndoRedo {
      * @pre {@code canUndo()}
      */
     public Command lastDone() throws IllegalStateException {
-        // # BEGIN TODO: Implementation of lastDone
+        //# BEGIN TODO: Implementation of lastDone
         // Check if there is something to be undone. If not, throw exception.
         if (!canUndo()) {
             throw new IllegalStateException("The undoStack is empty so there is nothing that"
                     + "can be undone.");
         }
-
+        
         // Return the top of the undoStack using peek().
         return undoStack.peek();
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -81,16 +79,16 @@ public class UndoRedo {
      * @pre {@code canRedo()}
      */
     public Command lastUndone() throws IllegalStateException {
-        // # BEGIN TODO: Implementation of lastUndone
+        //# BEGIN TODO: Implementation of lastUndone
         // Check if there is something to be redone. If not, throw exception.
         if (!canRedo()) {
             throw new IllegalStateException("The redoStack is empty so there is nothing that"
                     + "can be redone.");
         }
-
+        
         // Return the top of the redoStack using peek().
         return redoStack.peek();
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -99,11 +97,11 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void clear() {
-        // # BEGIN TODO: Implementation of clear
+        //# BEGIN TODO: Implementation of clear
         // Clear both the redoStack and the undoStack.
         redoStack.clear();
         undoStack.clear();
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -114,17 +112,17 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void did(final Command command) {
-        // # BEGIN TODO: Implementation of did
+        //# BEGIN TODO: Implementation of did
         // Check if command is executed.
         if (!command.isExecuted()) {
             // If not executed, execute the command.
             command.execute();
         }
-
+        
         // Clear the redoStack and push the just executed command to undoStack.
         redoStack.clear();
         undoStack.push(command);
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -136,22 +134,22 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void undo(final boolean redoable) throws IllegalStateException {
-        // # BEGIN TODO: Implementation of undo
+        //# BEGIN TODO: Implementation of undo
         // Check if there is something to be undone. If not, throw exception.
         if (!canUndo()) {
             throw new IllegalStateException("The undoStack is empty so there is nothing that"
                     + "can be undone.");
         }
-
+    
         // Remove the command from the undostack and then revert it.
         Command command = undoStack.pop();
         command.revert();
-
+    
         // If redoable is true, push the command to the redoStack.
         if (redoable) {
             redoStack.push(command);
         }
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -162,19 +160,19 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void redo() throws IllegalStateException {
-        // # BEGIN TODO: Implementation of redo
+        //# BEGIN TODO: Implementation of redo
         if (!canRedo()) {
-            throw new IllegalStateException("The redoStack is empty so there is nothing that"
+            throw new IllegalStateException("The redoStack is empty so there is nothing that" 
                     + "can be redone.");
         }
-
+        
         // Remove the command from the redostack and then execute it again.
         Command command = redoStack.pop();
         command.execute();
-
+        
         // Push the command to the undoStack.
         undoStack.push(command);
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -184,13 +182,13 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void undoAll(final boolean redoable) {
-        // # BEGIN TODO: Implementation of undoAll
-
-        // Go through whole stack and undo all
+        //# BEGIN TODO: Implementation of undoAll
+    
+        //Go through whole stack and undo all
         while (!undoStack.isEmpty()) {
             undo(redoable);
         }
-        // # END TODO
+        //# END TODO
     }
 
     /**
@@ -199,13 +197,13 @@ public class UndoRedo {
      * @modifies {@code this}
      */
     public void redoAll() {
-        // # BEGIN TODO: Implementation of redoAll
-
-        // Go through whole stack and redo all
+        //# BEGIN TODO: Implementation of redoAll
+    
+        //Go through whole stack and redo all
         while (!redoStack.isEmpty()) {
             redo();
         }
-        // # END TODO
+        //# END TODO
     }
 
 }

@@ -2,37 +2,37 @@ package ypa.command;
 
 import java.util.Collection;
 
-import ypa.model.HCell;
+import ypa.model.KCell;
 
 /**
  * The command to set the state of a cell.
  *
  * @author Tom Verhoeff (Eindhoven University of Technology)
  */
-public class SetCommand extends GenericCommand<HCell> {
+public class SetCommand extends GenericCommand<KCell> {
 
-    // Representation of command state
+// Representation of command state
     /** The command's parameter. */
     private final int newState;
 
     /** Previous state of the receiver, for revert(). */
     private int oldState;
-    //
+//
 
     /**
      * Constructs a set command for a given receiver and new state.
      *
-     * @param receiver the given receiver
-     * @param newState the new state
+     * @param receiver  the given receiver
+     * @param newState  the new state
      */
-    public SetCommand(final HCell receiver, final int newState) {
+    public SetCommand(final KCell receiver, final int newState) {
         super(receiver);
-        // Initialize command state
+// Initialize command state
         this.newState = newState;
-        //
+//
     }
 
-    // Operations
+// Operations
     @Override
     public void execute() {
         super.execute();
@@ -47,11 +47,11 @@ public class SetCommand extends GenericCommand<HCell> {
     }
 
     @Override
-    public Collection<HCell> getCells() {
-        Collection<HCell> result = super.getCells();
+    public Collection<KCell> getCells() {
+        Collection<KCell> result = super.getCells();
         result.add(receiver);
         return result;
     }
-    //
+//
 
 }
